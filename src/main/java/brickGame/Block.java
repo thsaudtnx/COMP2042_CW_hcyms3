@@ -9,33 +9,25 @@ import javafx.scene.shape.Rectangle;
 import java.io.Serializable;
 
 public class Block implements Serializable {
-    private static Block block = new Block(-1, -1, Color.TRANSPARENT, 99);
-
+    //private static Block block = new Block(-1, -1, Color.TRANSPARENT, 99);
     public int row;
     public int column;
-
-
     public boolean isDestroyed = false;
-
-    private Color color;
+    public Color color;
     public int type;
-
     public int x;
     public int y;
 
-    private int width = 100;
-    private int height = 30;
-    private int paddingTop = height * 2;
-    private int paddingH = 50;
+    public static int width = 100;
+    public static int height = 20;
+    public static int paddingTop = 50;
+    public static int paddingH = 50;
     public Rectangle rect;
-
-
     public static int NO_HIT = -1;
     public static int HIT_RIGHT = 0;
     public static int HIT_BOTTOM = 1;
     public static int HIT_LEFT = 2;
     public static int HIT_TOP = 3;
-
     public static int BLOCK_NORMAL = 99;
     public static int BLOCK_CHOCO = 100;
     public static int BLOCK_STAR = 101;
@@ -76,49 +68,56 @@ public class Block implements Serializable {
         } else {
             rect.setFill(color);
         }
-
     }
 
+    public int checkHitToBlock(double xBall, double yBall, double ballRadius) {
 
-    public int checkHitToBlock(double xBall, double yBall) {
+        double ballLeft = xBall - ballRadius;
+        double ballRight = xBall + ballRadius;
+        double ballTop = yBall - ballRadius;
+        double ballBottom = yBall + ballRadius;
+
+        double blockLeft = x;
+        double blockRight = x + width;
+        double blockTop = y;
+        double blockBottom = y + height;
 
         if (isDestroyed) {
             return NO_HIT;
         }
 
-        if (xBall >= x && xBall <= x + width && yBall == y + height) {
-            return HIT_BOTTOM;
-        }
-
-        if (xBall >= x && xBall <= x + width && yBall == y) {
-            return HIT_TOP;
-        }
-
-        if (yBall >= y && yBall <= y + height && xBall == x + width) {
-            return HIT_RIGHT;
-        }
-
-        if (yBall >= y && yBall <= y + height && xBall == x) {
-            return HIT_LEFT;
+        if (ballRight >= blockLeft && ballLeft <= blockRight && ballTop <= blockBottom && ballBottom >= blockTop) {
+            if (ballBottom == blockTop) {
+                return HIT_TOP;
+            }
+            if (ballTop == blockBottom) {
+                return HIT_BOTTOM;
+            }
+            if (ballRight == blockLeft) {
+                return HIT_LEFT;
+            }
+            if (ballLeft == blockRight) {
+                return HIT_RIGHT;
+            }
         }
 
         return NO_HIT;
     }
 
     public static int getPaddingTop() {
-        return block.paddingTop;
+        return paddingTop;
     }
 
     public static int getPaddingH() {
-        return block.paddingH;
+        return paddingH;
     }
 
     public static int getHeight() {
-        return block.height;
+        return height;
     }
 
     public static int getWidth() {
-        return block.width;
+        return width;
     }
 
 }
