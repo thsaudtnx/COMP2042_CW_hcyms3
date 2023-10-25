@@ -2,7 +2,6 @@ package brickGame;
 
 
 public class GameEngine {
-
     private OnAction onAction;
     private int fps = 15;
     private Thread updateThread;
@@ -90,7 +89,7 @@ public class GameEngine {
                     while (true) {
                         time++;
                         onAction.onTime(time);
-                        Thread.sleep(1);
+                        Thread.sleep(1000);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -99,7 +98,6 @@ public class GameEngine {
         });
         timeThread.start();
     }
-
 
     public interface OnAction {
         void onUpdate();

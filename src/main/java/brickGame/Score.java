@@ -29,6 +29,7 @@ public class Score {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                System.out.println("Show the points!");
                 for (int i = 0; i < 21; i++) {
                     try {
                         label.setScaleX(i);
@@ -39,6 +40,9 @@ public class Score {
                         e.printStackTrace();
                     }
                 }
+                Platform.runLater(() -> {
+                    main.root.getChildren().remove(label); // Remove the label from the root node
+                });
             }
         }).start();
     }

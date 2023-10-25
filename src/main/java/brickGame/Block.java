@@ -88,15 +88,19 @@ public class Block implements Serializable {
 
         if (ballRight >= blockLeft && ballLeft <= blockRight && ballTop <= blockBottom && ballBottom >= blockTop) {
             if (ballBottom == blockTop) {
+                System.out.println("Ball hit the top block");
                 return HIT_TOP;
             }
-            if (ballTop == blockBottom) {
+            else if (ballTop == blockBottom) {
+                System.out.println("Ball hit the bottom block");
                 return HIT_BOTTOM;
             }
-            if (ballRight == blockLeft) {
+            else if (ballRight >= blockLeft) {
+                System.out.println("Ball hit the left block");
                 return HIT_LEFT;
             }
-            if (ballLeft == blockRight) {
+            else { //ballLeft <= blockRight
+                System.out.println("Ball hit the right block");
                 return HIT_RIGHT;
             }
         }

@@ -9,7 +9,6 @@ import java.util.Random;
 
 public class Bonus implements Serializable {
     public Rectangle choco;
-
     public double x;
     public double y;
     public long timeCreated;
