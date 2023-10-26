@@ -1,5 +1,7 @@
 package brickGame;
 
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class Break {
@@ -13,7 +15,19 @@ public class Break {
     float oldXBreak;
     private static int LEFT  = 1;
     private static int RIGHT = 2;
-    public Rectangle rect = new Rectangle();
+    public Rectangle rect;
+    public Break(int sceneWidth, int sceneHeight) {
+        rect = new Rectangle();
+        xBreak = (sceneWidth - breakWidth )/ 2;
+        yBreak = sceneHeight - breakHeight*2;
+        rect.setWidth(breakWidth);
+        rect.setHeight(breakHeight);
+        rect.setX(xBreak);
+        rect.setY(yBreak);
+
+        ImagePattern pattern = new ImagePattern(new Image("block.jpg"));
+        rect.setFill(pattern);
+    }
     public void move(final int direction) {
         new Thread(new Runnable() {
             @Override

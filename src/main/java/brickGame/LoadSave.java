@@ -11,14 +11,8 @@ public class LoadSave {
     public boolean isGoldStauts;
     public boolean goDownBall;
     public boolean goRightBall;
-    public boolean colideToBreak;
-    public boolean colideToBreakAndMoveToRight;
-    public boolean colideToRightWall;
-    public boolean colideToLeftWall;
-    public boolean colideToRightBlock;
-    public boolean colideToBottomBlock;
-    public boolean colideToLeftBlock;
-    public boolean colideToTopBlock;
+    public boolean collideToBottomWall;
+    public boolean collideToBlock;
     public int level;
     public int score;
     public int heart;
@@ -56,14 +50,8 @@ public class LoadSave {
             isGoldStauts = inputStream.readBoolean();
             goDownBall = inputStream.readBoolean();
             goRightBall = inputStream.readBoolean();
-            colideToBreak = inputStream.readBoolean();
-            colideToBreakAndMoveToRight = inputStream.readBoolean();
-            colideToRightWall = inputStream.readBoolean();
-            colideToLeftWall = inputStream.readBoolean();
-            colideToRightBlock = inputStream.readBoolean();
-            colideToBottomBlock = inputStream.readBoolean();
-            colideToLeftBlock = inputStream.readBoolean();
-            colideToTopBlock = inputStream.readBoolean();
+            collideToBlock = inputStream.readBoolean();
+            collideToBottomWall = inputStream.readBoolean();
 
             try {
                 blocks = (ArrayList<BlockSerializable>) inputStream.readObject();

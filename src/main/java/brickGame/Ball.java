@@ -1,35 +1,133 @@
 package brickGame;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
+import java.util.ArrayList;
+
 public class Ball {
-    public Circle ball = new Circle();
+    public int sceneWidth;
+    public int sceneHeight;
+    public Circle ball;
     public double xBall;
     public double yBall;
     public static int ballRadius = 5;
     public boolean goDownBall = true;
     public boolean goRightBall = true;
-    public boolean collideToBreak = false;
-    public boolean collideToBreakAndMoveToRight = true;
-    public boolean collideToRightWall = false;
-    public boolean collideToLeftWall = false;
-    public boolean collideToRightBlock = false;
-    public boolean collideToBottomBlock = false;
-    public boolean collideToLeftBlock = false;
-    public boolean collideToTopBlock = false;
+    public boolean collideToBlock = false;
+    public boolean collideToBottomWall = false;
     public double vX = 1.000;
     public double vY = 1.000;
     public void resetCollideFlags() {
-        collideToBreak = false;
-        collideToBreakAndMoveToRight = false;
-        collideToRightWall = false;
-        collideToLeftWall = false;
+        collideToBlock = false;
+        collideToBottomWall = false;
+    }
 
-        collideToRightBlock = false;
-        collideToBottomBlock = false;
-        collideToLeftBlock = false;
-        collideToTopBlock = false;
+    public Ball(int sceneWidth, int sceneHeight) {
+        this.sceneWidth = sceneWidth;
+        this.sceneHeight = sceneHeight;
+        ball = new Circle();
+        xBall = (sceneWidth - ballRadius) / 2;
+        yBall = sceneHeight - 50;
+        ball.setRadius(ballRadius);
+        ball.setFill(new ImagePattern(new Image("ball.png")));
+    }
+
+    public void setPhysicsToBall(Break rect, int level, ArrayList<Block> blocks) {
+        //v = ((time - hitTime) / 1000.000) + 1.000;
+        if (goDownBall) {
+            yBall += vY;
+        } else {
+            yBall -= vY;
+        }
+
+        if (goRightBall) {
+            xBall += vX;
+        } else {
+            xBall -= vX;
+        }
+
+        resetCollideFlags();
+
+        //Ball hits the wall
+        //Ball collides to the top wall
+        if (yBall - ballRadius <= 0) {
+            System.out.println("Ball hit the top wall");
+            goDownBall = true;
+            return;
+        }
+        //Ball collides to the bottom wall
+        if (yBall + ballRadius >= sceneHeight) {
+            System.out.println("Ball hit the bottom wall");
+            collideToBottomWall = true;
+            goDownBall = false;
+            return;
+        }
+
+        //Ball collides the right wall
+        if (xBall + ballRadius >= sceneWidth) {
+            System.out.println("Ball hit the right wall");
+            goRightBall = false;
+            return;
+        }
+
+        //Ball collides the left wall
+        if (xBall - ballRadius <= 0) {
+            System.out.println("Ball hit the left wall");
+            goRightBall = true;
+            return;
+        }
+
+        //Ball hits the block
+        if (yBall + ballRadius >= Block.getPaddingTop() && yBall - ballRadius <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
+            for (final Block block : blocks) {
+                int hitCode = block.checkHitToBlock(xBall, yBall, ballRadius);
+                if (hitCode != Block.NO_HIT) {
+                    if (hitCode == Block.HIT_RIGHT) {
+                        goRightBall = true;
+                    } else if (hitCode == Block.HIT_BOTTOM) {
+                        goDownBall = true;
+                    } else if (hitCode == Block.HIT_LEFT) {
+                        goRightBall = false;
+                    } else if (hitCode == Block.HIT_TOP) {
+                        goDownBall = false;
+                    }
+                    collideToBlock = true;
+                    return;
+                }
+            }
+        }
+
+        //Ball hits the break
+        if (yBall >= rect.yBreak - ballRadius && rect.xBreak <= xBall + ballRadius && xBall - ballRadius <= rect.xBreak + rect.breakWidth) {
+            System.out.println("Ball hit the break");
+
+            //hitTime = time;
+            double relation = (xBall - rect.centerBreakX) / (rect.breakWidth / 2);
+
+            System.out.println("vX : " + vX + " vY : " + vY);
+            //If the relation==0 then hit the center [0 ~ 1]
+
+            if (Math.abs(relation) <= 0.3) {
+                //vX = 0;
+                vX = Math.abs(relation);
+            } else if (Math.abs(relation) > 0.3 && Math.abs(relation) <= 0.7) {
+                vX = (Math.abs(relation) * 1.5) + (level / 3.500);
+                //System.out.println("vX " + vX);
+            } else {
+                vX = (Math.abs(relation) * 2) + (level / 3.500);
+                //System.out.println("vX " + vX);
+            }
+
+            if (xBall - rect.centerBreakX > 0) {
+                goRightBall = true;
+            } else {
+                goRightBall = false;
+            }
+            goDownBall = false;
+            return;
+        }
     }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="brickGame.GameOverScene">
+   <children>
+      <Button layoutX="273.0" layoutY="285.0" mnemonicParsing="false" text="Restart" />
+      <Button layoutX="165.0" layoutY="285.0" mnemonicParsing="false" text="Home" />
+      <Button layoutX="376.0" layoutY="285.0" mnemonicParsing="false" text="Score Board" />
+      <TextField layoutX="238.0" layoutY="178.0" />
+      <Label layoutX="165.0" layoutY="182.0" text="username" />
+      <Label layoutX="178.0" layoutY="135.0" text="Score : " />
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="227.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
+</AnchorPane>
