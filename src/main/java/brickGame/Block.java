@@ -1,6 +1,7 @@
 package brickGame;
 
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -17,6 +18,8 @@ public class Block implements Serializable {
     public int type;
     public int x;
     public int y;
+
+    public static int destroyedBlockCount = 0;
 
     public static int width = 100;
     public static int height = 20;
@@ -86,7 +89,12 @@ public class Block implements Serializable {
             return NO_HIT;
         }
 
+        //If the ball hits the block
         if (ballRight >= blockLeft && ballLeft <= blockRight && ballTop <= blockBottom && ballBottom >= blockTop) {
+            rect.setVisible(false);
+            isDestroyed = true;
+            destroyedBlockCount++;
+
             if (ballBottom == blockTop) {
                 System.out.println("Ball hit the top block");
                 return HIT_TOP;

@@ -6,7 +6,7 @@ public class GameEngine {
     private int fps = 15;
     private Thread updateThread;
     private Thread physicsThread;
-    public boolean isStopped = true;
+    public boolean isStopped = false;
 
     public void setOnAction(OnAction onAction) {
         this.onAction = onAction;
@@ -23,7 +23,7 @@ public class GameEngine {
         updateThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!updateThread.isInterrupted()) {
+                while (!updateThread.isInterrupted() && !isStopped) {
                     try {
                         onAction.onUpdate();
                         Thread.sleep(fps);
@@ -44,7 +44,7 @@ public class GameEngine {
         physicsThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!physicsThread.isInterrupted()) {
+                while (!physicsThread.isInterrupted() && !isStopped) {
                     try {
                         onAction.onPhysicsUpdate();
                         Thread.sleep(fps);
@@ -60,6 +60,7 @@ public class GameEngine {
     }
 
     public void start() {
+        System.out.println("Engine Start");
         time = 0;
         Initialize();
         Update();
@@ -71,9 +72,9 @@ public class GameEngine {
     public void stop() {
         if (!isStopped) {
             isStopped = true;
-            updateThread.stop();
-            physicsThread.stop();
-            timeThread.stop();
+            //updateThread.stop();
+            //physicsThread.stop();
+            //timeThread.stop();
         }
     }
 
@@ -86,7 +87,7 @@ public class GameEngine {
             @Override
             public void run() {
                 try {
-                    while (true) {
+                    while (!isStopped) {
                         time++;
                         onAction.onTime(time);
                         Thread.sleep(1000);

@@ -25,8 +25,7 @@ public class LoadSave {
     public long time;
     public long goldTime;
     public double vX;
-    public ArrayList<BlockSerializable> blocks = new ArrayList<BlockSerializable>();
-
+    public ArrayList<Block> blocks;
 
     public void read() {
         try {
@@ -54,7 +53,7 @@ public class LoadSave {
             collideToBottomWall = inputStream.readBoolean();
 
             try {
-                blocks = (ArrayList<BlockSerializable>) inputStream.readObject();
+                blocks = (ArrayList<Block>) inputStream.readObject();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

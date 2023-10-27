@@ -17,12 +17,15 @@ public class Ball {
     public boolean goDownBall = true;
     public boolean goRightBall = true;
     public boolean collideToBlock = false;
+    public int hitBlockIndex = -1;
     public boolean collideToBottomWall = false;
     public double vX = 1.000;
     public double vY = 1.000;
+    //public double v = 1.000;
     public void resetCollideFlags() {
         collideToBlock = false;
         collideToBottomWall = false;
+        hitBlockIndex = -1;
     }
 
     public Ball(int sceneWidth, int sceneHeight) {
