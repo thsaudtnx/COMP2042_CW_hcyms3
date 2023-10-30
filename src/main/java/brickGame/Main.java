@@ -32,6 +32,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private Break rect;
     private boolean isGoldStatus = false;
     private boolean isExistHeartBlock = false;
+    private boolean isExistBonusBlock = false;
+    private boolean isExistStarBlock = false;
     private int destroyedBlockCount = 0;
 
     private int  heart = 3;
@@ -72,12 +74,12 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private Label timeLabel;
 
     Stage primaryStage;
-    Button loadButton = null;
-    Button newGameButton = null;
-    Button restartButton = null;
-    Button homeButton = null;
-    Button pauseButton = null;
-    Button rankingButton = null;
+    Button loadButton;
+    Button newGameButton;
+    Button nextGameButton;
+    Button homeButton;
+    Button pauseButton;
+    Button rankingButton;
 
 
     public static void main(String[] args) {
@@ -134,7 +136,16 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         //Set the root pane
         root = new Pane();
-        root.getChildren().addAll(rect.rect, ball.ball, scoreLabel, heartLabel, levelLabel, timeLabel, newGameButton, loadButton);
+        root.getChildren().addAll(
+                rect.rect,
+                ball.ball,
+                scoreLabel,
+                heartLabel,
+                levelLabel,
+                timeLabel,
+                newGameButton,
+                loadButton
+        );
 
         //Set blocks
         for (Block block : blocks) {
@@ -187,22 +198,17 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         chocos.clear();
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < level + 1; j++) {
-                int r = new Random().nextInt(500);
-                if (r % 5 == 0) {
-                    continue;
-                }
+                int r = new Random().nextInt(4);
                 int type;
-                if (r % 10 == 1) {
+                if (r==1 && !isExistBonusBlock) {
                     type = Block.BLOCK_CHOCO;
-                } else if (r % 10 == 2) {
-                    if (!isExistHeartBlock) {
-                        type = Block.BLOCK_HEART;
-                        isExistHeartBlock = true;
-                    } else {
-                        type = Block.BLOCK_NORMAL;
-                    }
-                } else if (r % 10 == 3) {
+                    isExistBonusBlock = true;
+                } else if (r==2 && !isExistHeartBlock) {
+                    type = Block.BLOCK_HEART;
+                    isExistHeartBlock = true;
+                } else if (r==3 && !isExistStarBlock){
                     type = Block.BLOCK_STAR;
+                    isExistStarBlock = true;
                 } else {
                     type = Block.BLOCK_NORMAL;
                 }
@@ -218,17 +224,11 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         destroyedBlockCount = 0;
         isGoldStatus = false;
         isExistHeartBlock = false;
+        isExistBonusBlock = false;
+        isExistStarBlock = false;
         hitTime = 0;
         time = 0;
         goldTime = 0;
-    }
-    private void checkDestroyedCount() {
-        if (destroyedBlockCount == blocks.size()) {
-            //TODO win level todo...
-            System.out.println("Next Level");
-
-            nextLevel();
-        }
     }
 
     private void saveGame() {
@@ -326,34 +326,20 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void nextLevel() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ball.vX = 1.000;
+        level++;
+        destroyedBlockCount = 0;
+        isGoldStatus = false;
+        isExistHeartBlock = false;
+        isExistBonusBlock = false;
+        isExistStarBlock = false;
+        hitTime = 0;
+        time = 0;
+        goldTime = 0;
 
-                    engine.stop();
-                    ball.resetCollideFlags();
-                    ball.goDownBall = true;
+        initBall();
+        initBoard();
+        initBreak();
 
-                    isGoldStatus = false;
-                    isExistHeartBlock = false;
-
-                    hitTime = 0;
-                    time = 0;
-                    goldTime = 0;
-
-                    engine.stop();
-                    blocks.clear();
-                    chocos.clear();
-                    destroyedBlockCount = 0;
-                    start(primaryStage);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     public void restartGame() {
@@ -365,8 +351,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             e.printStackTrace();
         }
     }
-
-
 
     @Override
     public void onUpdate() {
@@ -389,62 +373,57 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 }
             }
         });
-
-        //Update score and block if the ball hits the block
-        if (ball.collideToBlock) {
-            for (final Block block : blocks) {
-                int hitCode = block.checkHitToBlock(ball.xBall, ball.yBall, ball.ballRadius);
-                if (hitCode != Block.NO_HIT) {
-                    if (block.type == Block.BLOCK_NORMAL){
-                        System.out.println("Hit the Normal Block");
-                        score += 1;
-                        new Score().show(block.x, block.y, 1, this);
-                    }
-                    if (block.type == Block.BLOCK_CHOCO) {
-                        score += 3;
-                        System.out.println("Hit the Choco Block");
-                        new Score().show(block.x, block.y, 3, this);
-                        final Bonus choco = new Bonus(block.row, block.column);
-                        choco.timeCreated = time;
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                root.getChildren().add(choco.choco);
-                            }
-                        });
-                        chocos.add(choco);
-                    }
-
-                    if (block.type == Block.BLOCK_STAR) {
-                        System.out.println("Hit the Star Block");
-                        score += 1;
-                        new Score().show(block.x, block.y, 1, this);
-                        goldTime = time;
-                        ball.ball.setFill(new ImagePattern(new Image("goldball.png")));
-                        System.out.println("gold ball");
-                        root.getStyleClass().add("goldRoot");
-                        isGoldStatus = true;
-                    }
-
-                    if (block.type == Block.BLOCK_HEART) {
-                        System.out.println("Hit the Heart Block");
-                        score += 1;
-                        new Score().show(block.x, block.y, 1, this);
-                        heart++;
-                    }
-                }
-
-                //TODO hit to break and some work here....
-                //System.out.println("Break in row:" + block.row + " and column:" + block.column + " hit");
-            }
-        }
     }
 
     @Override
     public void onPhysicsUpdate() {
+        //Check if all the blocks are destroyed
+        if (destroyedBlockCount == blocks.size()) {
+            //TODO win level todo...
+            System.out.println("Next Level");
+            engine.stop();
+            nextLevel();
+        }
+
         //Update the movement of the ball and break
-        checkDestroyedCount();
         ball.setPhysicsToBall(rect, level, blocks);
+
+        //Check if the ball hits the block
+        if (ball.collideToBlock){
+            destroyedBlockCount++;
+            Block block = ball.collideBlock;
+            score += block.point;
+            if (block.type == Block.BLOCK_NORMAL){
+                new Score().show(block.x, block.y, block.point, this);
+            }
+            if (block.type == Block.BLOCK_CHOCO) {
+                new Score().show(block.x, block.y, block.point, this);
+                final Bonus choco = new Bonus(block.row, block.column);
+                choco.timeCreated = time;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        root.getChildren().add(choco.choco);
+                    }
+                });
+                chocos.add(choco);
+            }
+
+            if (block.type == Block.BLOCK_STAR) {
+                new Score().show(block.x, block.y, block.point, this);
+                goldTime = time;
+                ball.ball.setFill(new ImagePattern(new Image("goldball.png")));
+                System.out.println("gold ball");
+                root.getStyleClass().add("goldRoot");
+                isGoldStatus = true;
+            }
+
+            if (block.type == Block.BLOCK_HEART) {
+                new Score().show(block.x, block.y, block.point, this);
+                heart++;
+            }
+
+        }
 
         //Check if the ball hits the bottom with golden ball
         if (!isGoldStatus && ball.collideToBottomWall) {
@@ -458,8 +437,8 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             }
         }
 
-        // Check goldTime is over
-        if (time - goldTime > 5000) {
+        // Check goldtime is over
+        if (isGoldStatus && time - goldTime > 5) {
             ball.ball.setFill(new ImagePattern(new Image("ball.png")));
             root.getStyleClass().remove("goldRoot");
             isGoldStatus = false;
@@ -467,15 +446,20 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
         //Check break hits the bonus falling
         for (Bonus choco : chocos) {
-            if (choco.y > sceneHeigt || choco.taken) {
+            if (choco.taken){
                 continue;
             }
-            if (rect.yBreak <= choco.y && choco.y <= rect.yBreak + rect.breakHeight && choco.x >= rect.xBreak && choco.x <= rect.xBreak + rect.breakWidth) {
+            if (choco.y > sceneHeigt) {
+                choco.choco.setVisible(false);
+                continue;
+            }
+            if (rect.yBreak <= choco.y + Bonus.height && choco.x >= rect.xBreak && choco.x <= rect.xBreak + rect.breakWidth) {
                 System.out.println("You Got it and +3 score for you");
                 choco.taken = true;
                 choco.choco.setVisible(false);
                 score += 3;
                 new Score().show(choco.x, choco.y, 3, this);
+                continue;
             }
             choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
         }

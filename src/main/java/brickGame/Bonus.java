@@ -9,6 +9,9 @@ import java.util.Random;
 
 public class Bonus implements Serializable {
     public Rectangle choco;
+    public static int width = 30;
+    public static int height = 30;
+
     public double x;
     public double y;
     public long timeCreated;
@@ -23,8 +26,8 @@ public class Bonus implements Serializable {
 
     private void draw() {
         choco = new Rectangle();
-        choco.setWidth(30);
-        choco.setHeight(30);
+        choco.setWidth(width);
+        choco.setHeight(height);
         choco.setX(x);
         choco.setY(y);
 
@@ -37,7 +40,5 @@ public class Bonus implements Serializable {
 
         choco.setFill(new ImagePattern(new Image(url)));
     }
-
-
 
 }

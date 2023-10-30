@@ -17,15 +17,15 @@ public class Ball {
     public boolean goDownBall = true;
     public boolean goRightBall = true;
     public boolean collideToBlock = false;
-    public int hitBlockIndex = -1;
     public boolean collideToBottomWall = false;
+    public Block collideBlock;
     public double vX = 1.000;
     public double vY = 1.000;
     //public double v = 1.000;
     public void resetCollideFlags() {
         collideToBlock = false;
         collideToBottomWall = false;
-        hitBlockIndex = -1;
+        collideBlock = null;
     }
 
     public Ball(int sceneWidth, int sceneHeight) {
@@ -57,13 +57,13 @@ public class Ball {
         //Ball hits the wall
         //Ball collides to the top wall
         if (yBall - ballRadius <= 0) {
-            System.out.println("Ball hit the top wall");
+            //System.out.println("Ball hit the top wall");
             goDownBall = true;
             return;
         }
         //Ball collides to the bottom wall
         if (yBall + ballRadius >= sceneHeight) {
-            System.out.println("Ball hit the bottom wall");
+            //System.out.println("Ball hit the bottom wall");
             collideToBottomWall = true;
             goDownBall = false;
             return;
@@ -71,14 +71,14 @@ public class Ball {
 
         //Ball collides the right wall
         if (xBall + ballRadius >= sceneWidth) {
-            System.out.println("Ball hit the right wall");
+            //System.out.println("Ball hit the right wall");
             goRightBall = false;
             return;
         }
 
         //Ball collides the left wall
         if (xBall - ballRadius <= 0) {
-            System.out.println("Ball hit the left wall");
+            //System.out.println("Ball hit the left wall");
             goRightBall = true;
             return;
         }
@@ -86,18 +86,44 @@ public class Ball {
         //Ball hits the block
         if (yBall + ballRadius >= Block.getPaddingTop() && yBall - ballRadius <= (Block.getHeight() * (level + 1)) + Block.getPaddingTop()) {
             for (final Block block : blocks) {
-                int hitCode = block.checkHitToBlock(xBall, yBall, ballRadius);
-                if (hitCode != Block.NO_HIT) {
-                    if (hitCode == Block.HIT_RIGHT) {
-                        goRightBall = true;
-                    } else if (hitCode == Block.HIT_BOTTOM) {
-                        goDownBall = true;
-                    } else if (hitCode == Block.HIT_LEFT) {
-                        goRightBall = false;
-                    } else if (hitCode == Block.HIT_TOP) {
+                //if the block is already destroyed
+                if (block.isDestroyed){
+                    continue;
+                }
+
+                double ballLeft = xBall - ballRadius;
+                double ballRight = xBall + ballRadius;
+                double ballTop = yBall - ballRadius;
+                double ballBottom = yBall + ballRadius;
+
+                double blockLeft = block.x;
+                double blockRight = block.x + Block.width;
+                double blockTop = block.y;
+                double blockBottom = block.y + Block.height;
+
+                //If the ball hits the block
+                if (ballRight >= blockLeft && ballLeft <= blockRight && ballTop <= blockBottom && ballBottom >= blockTop){
+                    if (ballBottom == blockTop) {
+                        //System.out.println("Ball hit the top block");
                         goDownBall = false;
                     }
+                    else if (ballTop == blockBottom) {
+                        //System.out.println("Ball hit the bottom block");
+                        goDownBall = true;
+                    }
+                    else if (ballRight >= blockLeft) {
+                        //System.out.println("Ball hit the left block");
+                        goRightBall = false;
+                    }
+                    else { //ballLeft <= blockRight
+                        //System.out.println("Ball hit the right block");
+                        goRightBall = true;
+                    }
                     collideToBlock = true;
+
+                    block.isDestroyed = true;
+                    block.rect.setVisible(false);
+                    collideBlock = block;
                     return;
                 }
             }
@@ -105,7 +131,7 @@ public class Ball {
 
         //Ball hits the break
         if (yBall >= rect.yBreak - ballRadius && rect.xBreak <= xBall + ballRadius && xBall - ballRadius <= rect.xBreak + rect.breakWidth) {
-            System.out.println("Ball hit the break");
+            //System.out.println("Ball hit the break");
 
             //hitTime = time;
             double relation = (xBall - rect.centerBreakX) / (rect.breakWidth / 2);
@@ -133,4 +159,5 @@ public class Ball {
             return;
         }
     }
+
 }

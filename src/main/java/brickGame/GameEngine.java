@@ -68,13 +68,9 @@ public class GameEngine {
         TimeStart();
         isStopped = false;
     }
-
     public void stop() {
         if (!isStopped) {
             isStopped = true;
-            //updateThread.stop();
-            //physicsThread.stop();
-            //timeThread.stop();
         }
     }
 

@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 //import sun.plugin2.message.Message;
 
 public class Score {
-    public void show(final double x, final double y, int score, final Main main) {
+    public void show(final double x, final double y, int score, Main main) {
         String sign;
         if (score >= 0) {
             sign = "+";
@@ -19,32 +19,23 @@ public class Score {
         label.setTranslateX(x);
         label.setTranslateY(y);
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                main.root.getChildren().add(label);
-            }
+        Platform.runLater(() -> {
+            main.root.getChildren().add(label);
         });
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Show the points!");
-                for (int i = 0; i < 21; i++) {
-                    try {
-                        label.setScaleX(i);
-                        label.setScaleY(i);
-                        label.setOpacity((20 - i) / 20.0);
-                        Thread.sleep(15);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        Thread showThread = new Thread(()-> {
+            for (int i = 0; i < 21; i++) {
+                try {
+                    label.setScaleX(i);
+                    label.setScaleY(i);
+                    label.setOpacity((20 - i) / 20.0);
+                    Thread.sleep(15);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                Platform.runLater(() -> {
-                    main.root.getChildren().remove(label); // Remove the label from the root node
-                });
             }
-        }).start();
+        });
+        showThread.start();
     }
 
     public void showMessage(String message, final Main main) {
@@ -103,19 +94,15 @@ public class Score {
     }
 
     public void showWin(final Main main) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Label label = new Label("You Win :)");
-                label.setTranslateX(200);
-                label.setTranslateY(250);
-                label.setScaleX(2);
-                label.setScaleY(2);
+        Platform.runLater(()-> {
+            Label label = new Label("You Win :)");
+            label.setTranslateX(200);
+            label.setTranslateY(250);
+            label.setScaleX(2);
+            label.setScaleY(2);
 
 
-                main.root.getChildren().addAll(label);
-
-            }
+            main.root.getChildren().addAll(label);
         });
     }
 }
