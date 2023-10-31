@@ -43,9 +43,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     private long goldTime = 0;
 
     private GameEngine engine;
-    private boolean loadFromSave = false;
-    public static String savePath = "D:/save/save.mdds";
-    public static String savePathDir = "D:/save/";
     private ArrayList<Ball> balls = new ArrayList<Ball>();
     private ArrayList<Block> blocks = new ArrayList<Block>();
     private ArrayList<Bonus> chocos = new ArrayList<Bonus>();
@@ -123,6 +120,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
                     loadButton.setVisible(false);
                     newGameButton.setVisible(false);
+                    rankingButton.setVisible(false);
                 }
             });
             newGameButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -298,12 +296,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             case RIGHT:
                 rect.move(RIGHT);
                 break;
-            case DOWN:
-                //setPhysicsToBall();
-                break;
-            case S:
-                //saveGame();
-                break;
         }
     }
     private void initBall() {
@@ -353,107 +345,19 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
 
     private void saveGame() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                new File(savePathDir).mkdirs();
-                File file = new File(savePath);
-                ObjectOutputStream outputStream = null;
-                try {
-                    outputStream = new ObjectOutputStream(new FileOutputStream(file));
-
-                    outputStream.writeInt(level);
-                    outputStream.writeInt(score);
-                    outputStream.writeInt(heart);
-                    outputStream.writeInt(destroyedBlockCount);
-
-
-                    outputStream.writeDouble(ball.xBall);
-                    outputStream.writeDouble(ball.yBall);
-                    outputStream.writeDouble(rect.xBreak);
-                    outputStream.writeDouble(rect.yBreak);
-                    outputStream.writeDouble(rect.centerBreakX);
-                    outputStream.writeLong(time);
-                    outputStream.writeLong(goldTime);
-                    outputStream.writeDouble(ball.vX);
-
-
-                    outputStream.writeBoolean(isExistHeartBlock);
-                    outputStream.writeBoolean(isGoldStatus);
-                    outputStream.writeBoolean(ball.goDownBall);
-                    outputStream.writeBoolean(ball.goRightBall);
-                    outputStream.writeBoolean(ball.collideToBlock);
-                    outputStream.writeBoolean(ball.collideToBottomWall);
-                    outputStream.writeObject(blocks);
-
-                    new Score().showMessage("Game Saved", Main.this);
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        outputStream.flush();
-                        outputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-
+        LoadSave loadSave = new LoadSave(level, time, score, heart);
+        loadSave.saveGame();
     }
     private void loadGame() {
-        try {
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(Main.savePath)));
+        LoadSave loadSave = new LoadSave(level, time, score, heart);
+        loadSave.loadGame();
 
-            level = inputStream.readInt();
-            score = inputStream.readInt();
-            heart = inputStream.readInt();
-            destroyedBlockCount = inputStream.readInt();
-            isExistHeartBlock = inputStream.readBoolean();
-            isGoldStatus = inputStream.readBoolean();
+        level = loadSave.level;
+        time = loadSave.time;
+        score = loadSave.score;
+        heart = loadSave.heart;
 
-            ball.xBall = inputStream.readDouble();
-            ball.yBall = inputStream.readDouble();
-            rect.xBreak = inputStream.readDouble();
-            rect.yBreak = inputStream.readDouble();
-            rect.centerBreakX = inputStream.readDouble();
-            time = inputStream.readLong();
-            goldTime = inputStream.readLong();
-            ball.vX = inputStream.readDouble();
-
-            ball.goDownBall = inputStream.readBoolean();
-            ball.goRightBall = inputStream.readBoolean();
-            ball.collideToBlock = inputStream.readBoolean();
-            ball.collideToBottomWall = inputStream.readBoolean();
-
-            try {
-                blocks = (ArrayList<Block>) inputStream.readObject();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        blocks.clear();
-        chocos.clear();
-
-        for (Block block : blocks) {
-            blocks.add(block);
-        }
-
-        try {
-            loadFromSave = true;
-            engine.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
+        engine.start();
     }
 
     public void restartGame() {
@@ -492,7 +396,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     @Override
     public void onPhysicsUpdate() {
         //Clear the level
-        if (destroyedBlockCount == blocks.size()) {
+        if (destroyedBlockCount == 1) {
             //TODO win level todo...
             System.out.println("Next Level");
             engine.stop();
