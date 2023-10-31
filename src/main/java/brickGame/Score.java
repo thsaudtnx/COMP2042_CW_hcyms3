@@ -19,21 +19,23 @@ public class Score {
         label.setTranslateX(x);
         label.setTranslateY(y);
 
-        Platform.runLater(() -> {
-            main.root.getChildren().add(label);
-        });
-
-        Thread showThread = new Thread(()-> {
-            for (int i = 0; i < 21; i++) {
-                try {
-                    label.setScaleX(i);
-                    label.setScaleY(i);
-                    label.setOpacity((20 - i) / 20.0);
-                    Thread.sleep(15);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        Thread showThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 21; i++) {
+                    try {
+                        label.setScaleX(i);
+                        label.setScaleY(i);
+                        label.setOpacity((20 - i) / 20.0);
+                        Thread.sleep(15);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+        });
+        Platform.runLater(() -> {
+            main.root.getChildren().add(label);
         });
         showThread.start();
     }
@@ -80,6 +82,16 @@ public class Score {
                 Button restart = new Button("Restart");
                 restart.setTranslateX(220);
                 restart.setTranslateY(300);
+
+                Button ranking = new Button("Ranking");
+                ranking.setTranslateX(220);
+                ranking.setTranslateY(340);
+                ranking.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+
+                    }
+                });
                 restart.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -87,7 +99,7 @@ public class Score {
                     }
                 });
 
-                main.root.getChildren().addAll(label, restart);
+                main.root.getChildren().addAll(label, restart, ranking);
 
             }
         });

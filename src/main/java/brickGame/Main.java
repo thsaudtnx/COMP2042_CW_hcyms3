@@ -80,6 +80,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     Button homeButton;
     Button pauseButton;
     Button rankingButton;
+    Button saveButton;
 
 
     public static void main(String[] args) {
@@ -87,86 +88,206 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     }
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.primaryStage = primaryStage;
+        if (level==1){
+            this.primaryStage = primaryStage;
 
-        //initialize
-        initBreak();
-        initBall();
-        initSetting();
-        initBoard();
+            //initialize
+            initBreak();
+            initBall();
+            initSetting();
+            initBoard();
 
-        //Set Buttons
-        newGameButton = new Button("Start New Game");
-        loadButton = new Button("Load Game");
-        newGameButton.setTranslateX(220);
-        newGameButton.setTranslateY(340);
-        loadButton.setTranslateX(220);
-        loadButton.setTranslateY(300);
-        loadButton.setVisible(true);
-        newGameButton.setVisible(true);
-        loadButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                loadGame();
+            //Set Buttons
+            newGameButton = new Button("Start New Game");
+            loadButton = new Button("Load Game");
+            rankingButton = new Button("Rankings");
+            newGameButton.setTranslateX(220);
+            newGameButton.setTranslateY(340);
+            loadButton.setTranslateX(220);
+            loadButton.setTranslateY(300);
+            rankingButton.setTranslateX(220);
+            rankingButton.setTranslateY(380);
+            loadButton.setVisible(true);
+            newGameButton.setVisible(true);
+            rankingButton.setVisible(true);
+            rankingButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    System.out.println("Ranking On");
+                }
+            });
+            loadButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    loadGame();
 
-                loadButton.setVisible(false);
-                newGameButton.setVisible(false);
+                    loadButton.setVisible(false);
+                    newGameButton.setVisible(false);
+                }
+            });
+            newGameButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    engine.start();
+
+                    loadButton.setVisible(false);
+                    newGameButton.setVisible(false);
+                    rankingButton.setVisible(false);
+                }
+            });
+
+            //Set Labels
+            scoreLabel = new Label("Score: " + score);
+            levelLabel = new Label("Level : " + level);
+            heartLabel = new Label("Heart : " + heart);
+            timeLabel = new Label("Time : " + time);
+            scoreLabel.setTranslateX(0);
+            levelLabel.setTranslateY(20);
+            heartLabel.setTranslateX(sceneWidth - 70);
+            timeLabel.setTranslateY(20);
+            timeLabel.setTranslateX(sceneWidth - 70);
+
+            //Set the root pane
+            root = new Pane();
+            root.getChildren().addAll(
+                    rect.rect,
+                    ball.ball,
+                    scoreLabel,
+                    heartLabel,
+                    levelLabel,
+                    timeLabel,
+                    newGameButton,
+                    loadButton,
+                    rankingButton
+            );
+
+            //Set blocks
+            for (Block block : blocks) {
+                root.getChildren().add(block.rect);
             }
-        });
-        newGameButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                engine.start();
 
-                loadButton.setVisible(false);
-                newGameButton.setVisible(false);
-            }
-        });
+            //Set the main scene
+            scene = new Scene(root, sceneWidth, sceneHeigt);
+            scene.getStylesheets().add("style.css");
+            scene.setOnKeyPressed(this);
 
-        //Set Labels
-        scoreLabel = new Label("Score: " + score);
-        levelLabel = new Label("Level : " + level);
-        heartLabel = new Label("Heart : " + heart);
-        timeLabel = new Label("Time : " + time);
-        scoreLabel.setTranslateX(0);
-        levelLabel.setTranslateY(20);
-        heartLabel.setTranslateX(sceneWidth - 70);
-        timeLabel.setTranslateY(20);
-        timeLabel.setTranslateX(sceneWidth - 70);
+            //Set the primary stage
+            primaryStage.setTitle("Brick Game");
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
 
-        //Set the root pane
-        root = new Pane();
-        root.getChildren().addAll(
-                rect.rect,
-                ball.ball,
-                scoreLabel,
-                heartLabel,
-                levelLabel,
-                timeLabel,
-                newGameButton,
-                loadButton
-        );
-
-        //Set blocks
-        for (Block block : blocks) {
-            root.getChildren().add(block.rect);
+            //Set the game engine
+            engine = new GameEngine();
+            engine.setOnAction(this);
+            engine.setFps(120);
         }
 
-        //Set the main scene
-        scene = new Scene(root, sceneWidth, sceneHeigt);
-        scene.getStylesheets().add("style.css");
-        scene.setOnKeyPressed(this);
+        //When its middle term in the game
+        if (level>1){
+            //initialize
+            heart = 3;
+            destroyedBlockCount = 0;
+            isGoldStatus = false;
+            isExistHeartBlock = false;
+            isExistBonusBlock = false;
+            isExistStarBlock = false;
+            hitTime = 0;
+            time = 0;
+            goldTime = 0;
+            initBreak();
+            initBall();
+            initBoard();
 
-        //Set the primary stage
-        primaryStage.setTitle("Brick Game");
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.show();
+            //set buttons
+            nextGameButton = new Button("Next Game");
+            homeButton = new Button("Home");
+            saveButton = new Button("Save");
+            nextGameButton.setTranslateX(220);
+            nextGameButton.setTranslateY(340);
+            homeButton.setTranslateX(220);
+            homeButton.setTranslateY(300);
+            saveButton.setTranslateX(220);
+            saveButton.setTranslateY(380);
+            nextGameButton.setVisible(true);
+            homeButton.setVisible(true);
+            nextGameButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    homeButton.setVisible(false);
+                    nextGameButton.setVisible(false);
+                    try {
+                        engine.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            homeButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    homeButton.setVisible(false);
+                    nextGameButton.setVisible(false);
+                    try {
+                        level=1;
+                        start(primaryStage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            saveButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    saveGame();
+                }
+            });
 
-        //Set the game engine
-        engine = new GameEngine();
-        engine.setOnAction(this);
-        engine.setFps(120);
+            //Set Labels
+            scoreLabel = new Label("Score: " + score);
+            levelLabel = new Label("Level : " + level);
+            heartLabel = new Label("Heart : " + heart);
+            timeLabel = new Label("Time : " + time);
+            scoreLabel.setTranslateX(0);
+            levelLabel.setTranslateY(20);
+            heartLabel.setTranslateX(sceneWidth - 70);
+            timeLabel.setTranslateY(20);
+            timeLabel.setTranslateX(sceneWidth - 70);
+
+            //Set the root pane
+            Platform.runLater(() -> {
+                root = new Pane();
+                root.getChildren().addAll(
+                        rect.rect,
+                        ball.ball,
+                        scoreLabel,
+                        heartLabel,
+                        levelLabel,
+                        timeLabel,
+                        nextGameButton,
+                        homeButton,
+                        saveButton
+                );
+
+                //Set blocks
+                for (Block block : blocks) {
+                    root.getChildren().add(block.rect);
+                }
+
+                //Set the main scene
+                scene = new Scene(root, sceneWidth, sceneHeigt);
+                scene.getStylesheets().add("style.css");
+                scene.setOnKeyPressed(this);
+
+                //Set the primary stage
+                primaryStage.setScene(scene);
+            });
+
+            //Set the game engine
+            engine = new GameEngine();
+            engine.setOnAction(this);
+            engine.setFps(120);
+        }
     }
     @Override
     public void handle(KeyEvent event) {
@@ -283,35 +404,45 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
         }).start();
 
     }
-
     private void loadGame() {
+        try {
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(Main.savePath)));
 
-        LoadSave loadSave = new LoadSave();
-        loadSave.read();
+            level = inputStream.readInt();
+            score = inputStream.readInt();
+            heart = inputStream.readInt();
+            destroyedBlockCount = inputStream.readInt();
+            isExistHeartBlock = inputStream.readBoolean();
+            isGoldStatus = inputStream.readBoolean();
 
-        isExistHeartBlock = loadSave.isExistHeartBlock;
-        isGoldStatus = loadSave.isGoldStauts;
-        ball.goDownBall = loadSave.goDownBall;
-        ball.goRightBall = loadSave.goRightBall;
-        ball.collideToBottomWall = loadSave.collideToBottomWall;
-        ball.collideToBlock = loadSave.collideToBlock;
-        level = loadSave.level;
-        score = loadSave.score;
-        heart = loadSave.heart;
-        destroyedBlockCount = loadSave.destroyedBlockCount;
-        ball.xBall = loadSave.xBall;
-        ball.yBall = loadSave.yBall;
-        rect.xBreak = loadSave.xBreak;
-        rect.yBreak = loadSave.yBreak;
-        rect.centerBreakX = loadSave.centerBreakX;
-        time = loadSave.time;
-        goldTime = loadSave.goldTime;
-        ball.vX = loadSave.vX;
+            ball.xBall = inputStream.readDouble();
+            ball.yBall = inputStream.readDouble();
+            rect.xBreak = inputStream.readDouble();
+            rect.yBreak = inputStream.readDouble();
+            rect.centerBreakX = inputStream.readDouble();
+            time = inputStream.readLong();
+            goldTime = inputStream.readLong();
+            ball.vX = inputStream.readDouble();
+
+            ball.goDownBall = inputStream.readBoolean();
+            ball.goRightBall = inputStream.readBoolean();
+            ball.collideToBlock = inputStream.readBoolean();
+            ball.collideToBottomWall = inputStream.readBoolean();
+
+            try {
+                blocks = (ArrayList<Block>) inputStream.readObject();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         blocks.clear();
         chocos.clear();
 
-        for (Block block : loadSave.blocks) {
+        for (Block block : blocks) {
             blocks.add(block);
         }
 
@@ -322,23 +453,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             e.printStackTrace();
         }
 
-
-    }
-
-    private void nextLevel() {
-        level++;
-        destroyedBlockCount = 0;
-        isGoldStatus = false;
-        isExistHeartBlock = false;
-        isExistBonusBlock = false;
-        isExistStarBlock = false;
-        hitTime = 0;
-        time = 0;
-        goldTime = 0;
-
-        initBall();
-        initBoard();
-        initBreak();
 
     }
 
@@ -377,12 +491,17 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
 
     @Override
     public void onPhysicsUpdate() {
-        //Check if all the blocks are destroyed
+        //Clear the level
         if (destroyedBlockCount == blocks.size()) {
             //TODO win level todo...
             System.out.println("Next Level");
             engine.stop();
-            nextLevel();
+            try {
+                level++;
+                start(primaryStage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         //Update the movement of the ball and break
@@ -464,9 +583,6 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
         }
     }
-
-    @Override
-    public void onInit(){}
     @Override
     public void onTime(long time) {
         this.time = time;

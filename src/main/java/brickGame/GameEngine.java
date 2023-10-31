@@ -36,10 +36,6 @@ public class GameEngine {
         updateThread.start();
     }
 
-    private void Initialize() {
-        onAction.onInit();
-    }
-
     private synchronized void PhysicsCalculation() {
         physicsThread = new Thread(new Runnable() {
             @Override
@@ -62,7 +58,6 @@ public class GameEngine {
     public void start() {
         System.out.println("Engine Start");
         time = 0;
-        Initialize();
         Update();
         PhysicsCalculation();
         TimeStart();
@@ -98,8 +93,6 @@ public class GameEngine {
 
     public interface OnAction {
         void onUpdate();
-
-        void onInit();
 
         void onPhysicsUpdate();
 
