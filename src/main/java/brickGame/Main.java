@@ -181,6 +181,34 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
             engine.setFps(120);
         }
 
+        //If clear the last level
+        if (level==2){
+            new Score().showWin(this);
+            Platform.runLater(() -> {
+                homeButton = new Button("Home");
+                homeButton.setTranslateX(220);
+                homeButton.setTranslateY(300);
+                homeButton.setVisible(true);
+
+                homeButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        homeButton.setVisible(false);
+                        try {
+                            level=1;
+                            start(primaryStage);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+
+                root.getChildren().add(homeButton);
+            });
+            return;
+        }
+
         //When its middle term in the game
         if (level>1){
             //initialize
@@ -214,6 +242,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
                 public void handle(ActionEvent event) {
                     homeButton.setVisible(false);
                     nextGameButton.setVisible(false);
+                    saveButton.setVisible(false);
                     try {
                         engine.start();
                     } catch (Exception e) {
@@ -396,7 +425,7 @@ public class Main extends Application implements EventHandler<KeyEvent>, GameEng
     @Override
     public void onPhysicsUpdate() {
         //Clear the level
-        if (destroyedBlockCount == 1) {
+        if (destroyedBlockCount == 2) {
             //TODO win level todo...
             System.out.println("Next Level");
             engine.stop();

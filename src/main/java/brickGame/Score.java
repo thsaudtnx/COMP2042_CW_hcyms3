@@ -113,7 +113,6 @@ public class Score {
             label.setScaleX(2);
             label.setScaleY(2);
 
-
             main.root.getChildren().addAll(label);
         });
     }
