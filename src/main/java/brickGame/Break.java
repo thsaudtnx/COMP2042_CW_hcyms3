@@ -2,12 +2,14 @@ package brickGame;
 
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class Break {
     private int sceneWidth = 500;
+    private int sceneHeight = 700;
     public int breakWidth = 100;
     public int breakHeight = 10;
     public int halfBreakWidth = breakWidth / 2;
@@ -18,7 +20,7 @@ public class Break {
     private static int LEFT  = 1;
     private static int RIGHT = 2;
     public Rectangle rect;
-    public Break(int sceneWidth, int sceneHeight) {
+    public Break() {
         rect = new Rectangle();
         xBreak = (sceneWidth - breakWidth )/ 2;
         yBreak = sceneHeight - breakHeight*2;
@@ -27,24 +29,24 @@ public class Break {
         rect.setX(xBreak);
         rect.setY(yBreak);
 
-        ImagePattern pattern = new ImagePattern(new Image("block.jpg"));
+        ImagePattern pattern = new ImagePattern(new Image("break.png"));
         rect.setFill(pattern);
     }
-    public void move(final int direction) {
+    public void move(final KeyCode keyCode) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int sleepTime = 4;
                 for (int i = 0; i < 30; i++) {
                     //if break hits the right wall
-                    if (xBreak == (sceneWidth - breakWidth) && direction == RIGHT) {
+                    if (xBreak == (sceneWidth - breakWidth) && keyCode == KeyCode.RIGHT) {
                         return;
                     }
                     //if break hits the left wall
-                    if (xBreak == 0 && direction == LEFT) {
+                    if (xBreak == 0 && keyCode == KeyCode.LEFT) {
                         return;
                     }
-                    if (direction == RIGHT) {
+                    if (keyCode == KeyCode.RIGHT) {
                         xBreak++;
                     } else {
                         xBreak--;

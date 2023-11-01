@@ -68,6 +68,11 @@ public class GameEngine {
             isStopped = true;
         }
     }
+    public void go(){
+        if (isStopped){
+            isStopped = false;
+        }
+    }
 
     private long time = 0;
 
