@@ -8,6 +8,8 @@ import javafx.scene.control.Label;
 //import sun.plugin2.message.Message;
 
 public class Score {
+    private Thread showThread;
+
     public void show(final double x, final double y, int score, Main main) {
         String sign;
         if (score >= 0) {
@@ -18,24 +20,30 @@ public class Score {
         final Label label = new Label(sign + score);
         label.setTranslateX(x);
         label.setTranslateY(y);
+        label.setVisible(true);
+        Platform.runLater(() -> {
+            main.root.getChildren().add(label);
+        });
 
-        Thread showThread = new Thread(new Runnable() {
+        showThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < 21; i++) {
-                    try {
-                        label.setScaleX(i);
-                        label.setScaleY(i);
-                        label.setOpacity((20 - i) / 20.0);
-                        Thread.sleep(15);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                while (true) {
+                    if (!showThread.isInterrupted()){
+                        for (int i = 0; i < 21; i++) {
+                            try {
+                                label.setScaleX(i);
+                                label.setScaleY(i);
+                                label.setOpacity((20 - i) / 20.0);
+                                Thread.sleep(15);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
                     }
                 }
             }
-        });
-        Platform.runLater(() -> {
-            main.root.getChildren().add(label);
         });
         showThread.start();
     }

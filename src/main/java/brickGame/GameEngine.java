@@ -23,12 +23,14 @@ public class GameEngine {
         updateThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!updateThread.isInterrupted() && !isStopped) {
-                    try {
-                        onAction.onUpdate();
-                        Thread.sleep(fps);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                while (!updateThread.isInterrupted()) {
+                    if (!isStopped){
+                        try {
+                            onAction.onUpdate();
+                            Thread.sleep(fps);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -40,12 +42,14 @@ public class GameEngine {
         physicsThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!physicsThread.isInterrupted() && !isStopped) {
-                    try {
-                        onAction.onPhysicsUpdate();
-                        Thread.sleep(fps);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                while (!physicsThread.isInterrupted()) {
+                    if (!isStopped){
+                        try {
+                            onAction.onPhysicsUpdate();
+                            Thread.sleep(fps);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
