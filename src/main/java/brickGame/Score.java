@@ -8,9 +8,8 @@ import javafx.scene.control.Label;
 //import sun.plugin2.message.Message;
 
 public class Score {
-    private Thread showThread;
 
-    public void show(final double x, final double y, int score, Main main) {
+    public void showScore(final double x, final double y, int score, Main main) {
         String sign;
         if (score >= 0) {
             sign = "+";
@@ -25,27 +24,25 @@ public class Score {
             main.root.getChildren().add(label);
         });
 
-        showThread = new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    if (!showThread.isInterrupted()){
-                        for (int i = 0; i < 21; i++) {
-                            try {
-                                label.setScaleX(i);
-                                label.setScaleY(i);
-                                label.setOpacity((20 - i) / 20.0);
-                                Thread.sleep(15);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        break;
+                for (int i = 0; i < 21; i++) {
+                    final int scaleValue = i;
+                    final double opacityValue = (20 - i) / 20.0;
+                    try {
+                        Platform.runLater(() -> {
+                            label.setScaleX(scaleValue);
+                            label.setScaleY(scaleValue);
+                            label.setOpacity(opacityValue);
+                        });
+                        Thread.sleep(15);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }
-        });
-        showThread.start();
+        }).start();
     }
 
     public void showMessage(String message, final Main main) {
@@ -53,21 +50,20 @@ public class Score {
         label.setTranslateX(220);
         label.setTranslateY(340);
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                main.root.getChildren().add(label);
-            }
+        Platform.runLater(() -> {
+            main.root.getChildren().add(label);
         });
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < 21; i++) {
+                    final int scaleValue = Math.abs(i-10);
+                    final double opacityValue = (20 - i) / 20.0;
                     try {
-                        label.setScaleX(Math.abs(i-10));
-                        label.setScaleY(Math.abs(i-10));
-                        label.setOpacity((20 - i) / 20.0);
+                        label.setScaleX(scaleValue);
+                        label.setScaleY(scaleValue);
+                        label.setOpacity(opacityValue);
                         Thread.sleep(15);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -78,49 +74,44 @@ public class Score {
     }
 
     public void showGameOver(final Main main) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Label label = new Label("Game Over :(");
-                label.setTranslateX(200);
-                label.setTranslateY(250);
-                label.setScaleX(2);
-                label.setScaleY(2);
-
-                Button restart = new Button("Restart");
-                restart.setTranslateX(220);
-                restart.setTranslateY(300);
-
-                Button ranking = new Button("Ranking");
-                ranking.setTranslateX(220);
-                ranking.setTranslateY(340);
-                ranking.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-
-                    }
-                });
-                restart.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        main.restartGame();
-                    }
-                });
-
-                main.root.getChildren().addAll(label, restart, ranking);
-
-            }
-        });
-    }
-
-    public void showWin(final Main main) {
-        Platform.runLater(()-> {
-            Label label = new Label("You Win :)");
+            Label label = new Label("Game Over :(");
             label.setTranslateX(200);
             label.setTranslateY(250);
             label.setScaleX(2);
             label.setScaleY(2);
 
+            Button restart = new Button("Restart");
+            restart.setTranslateX(220);
+            restart.setTranslateY(300);
+
+            Button ranking = new Button("Ranking");
+            ranking.setTranslateX(220);
+            ranking.setTranslateY(340);
+            ranking.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+
+                }
+            });
+            restart.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    main.restartGame();
+                }
+            });
+
+            Platform.runLater(() -> {
+                main.root.getChildren().addAll(label, restart, ranking);
+            });
+    }
+
+    public void showWin(final Main main) {
+        Label label = new Label("You Win :)");
+        label.setTranslateX(200);
+        label.setTranslateY(250);
+        label.setScaleX(2);
+        label.setScaleY(2);
+        Platform.runLater(()-> {
             main.root.getChildren().addAll(label);
         });
     }

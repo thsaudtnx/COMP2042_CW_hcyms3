@@ -703,10 +703,10 @@ public class Main extends Application implements GameEngine.OnAction {
             Block block = ball.collideBlock;
             score += block.point;
             if (block.type == Block.BLOCK_NORMAL){
-                new Score().show(block.x, block.y, block.point, this);
+                new Score().showScore(block.x, block.y, block.point, this);
             }
             if (block.type == Block.BLOCK_CHOCO) {
-                new Score().show(block.x, block.y, block.point, this);
+                new Score().showScore(block.x, block.y, block.point, this);
                 final Bonus choco = new Bonus(block.row, block.column);
                 choco.timeCreated = time;
                 Platform.runLater(new Runnable() {
@@ -719,7 +719,7 @@ public class Main extends Application implements GameEngine.OnAction {
             }
 
             if (block.type == Block.BLOCK_STAR) {
-                new Score().show(block.x, block.y, block.point, this);
+                new Score().showScore(block.x, block.y, block.point, this);
                 goldTime = time;
                 ball.ball.setFill(new ImagePattern(new Image("goldball.png")));
                 System.out.println("gold ball");
@@ -728,7 +728,7 @@ public class Main extends Application implements GameEngine.OnAction {
             }
 
             if (block.type == Block.BLOCK_HEART) {
-                new Score().show(block.x, block.y, block.point, this);
+                new Score().showScore(block.x, block.y, block.point, this);
                 heart++;
             }
 
@@ -738,7 +738,7 @@ public class Main extends Application implements GameEngine.OnAction {
         if (!isGoldStatus && ball.collideToBottomWall) {
             //TODO gameover
             heart--;
-            new Score().show(sceneWidth / 2, sceneHeight / 2, -1, this);
+            new Score().showScore(sceneWidth / 2, sceneHeight / 2, -1, this);
 
             if (heart == 0) {
                 try {
@@ -772,7 +772,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 choco.taken = true;
                 choco.choco.setVisible(false);
                 score += 3;
-                new Score().show(choco.x, choco.y, 3, this);
+                new Score().showScore(choco.x, choco.y, 3, this);
                 continue;
             }
             choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
