@@ -26,40 +26,23 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Main extends Application implements GameEngine.OnAction {
-    private int page = 0; //0 home, 1 inGame, 2 after game
-    private int level = 1;
     final private int sceneWidth = 500;
     final private int sceneHeight = 700;
 
     private Ball ball;
     private Break rect;
-    private boolean isGoldStatus = false;
-    private int destroyedBlockCount = 0;
+    private Block block;
+    private Bonus bonus;
 
+    private boolean isGoldStatus = false;
+    private int page = 0; //0 home, 1 inGame, 2 after game
+    private int level = 1;
     private int  heart = 3;
     private int  score = 0;
     private long time = 0;
     private long goldTime = 0;
 
     private GameEngine engine;
-    private ArrayList<Ball> balls = new ArrayList<Ball>();
-    private ArrayList<Block> blocks = new ArrayList<Block>();
-    private ArrayList<Bonus> chocos = new ArrayList<Bonus>();
-    private Color[] colors = new Color[]{
-        Color.MAGENTA,
-        Color.RED,
-        Color.GOLD,
-        Color.CORAL,
-        Color.AQUA,
-        Color.VIOLET,
-        Color.GREENYELLOW,
-        Color.ORANGE,
-        Color.PINK,
-        Color.SLATEGREY,
-        Color.YELLOW,
-        Color.TOMATO,
-        Color.TAN,
-    };
     public Pane root;
     private Scene scene;
     private Label titleLabel;
@@ -153,9 +136,17 @@ public class Main extends Application implements GameEngine.OnAction {
             loadGameButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    page=1;
-                    loadGame();
-                    engine.start();
+                    try {
+                        page = 1;
+                        LoadSave.loadGame();
+                        level = LoadSave.Data.level;
+                        score = LoadSave.Data.score;
+                        heart = LoadSave.Data.heart;
+                        time = LoadSave.Data.time;
+                        start(primaryStage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             newGameButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -254,14 +245,12 @@ public class Main extends Application implements GameEngine.OnAction {
             if (level==1){
                 heart = 3;
                 score = 0;
-                destroyedBlockCount = 0;
                 isGoldStatus = false;
                 time = 0;
                 goldTime = 0;
             }
             else {
-                //initialize except score and heart
-                destroyedBlockCount = 0;
+                //initialize except score and heart and time
                 isGoldStatus = false;
                 time = 0;
                 goldTime = 0;
@@ -295,10 +284,12 @@ public class Main extends Application implements GameEngine.OnAction {
                         heartLabel,
                         levelLabel,
                         timeLabel,
-                        rect.rect,
-                        ball.ball
+                        rect.rect
                 );
-                for (Block block : blocks) {
+                for (Ball.BallEntry ball : ball.balls){
+                    root.getChildren().add(ball.ball);
+                }
+                for (Block.BlockEntry block : block.blocks) {
                     root.getChildren().add(block.rect);
                 }
 
@@ -431,7 +422,7 @@ public class Main extends Application implements GameEngine.OnAction {
         //After the game
         else if (page==2){
             //Clear the last level
-            if (level==2){
+            if (level==11){
                 //new Score().showWin(this);
                 //Set Label
                 titleLabel = new Label();
@@ -650,7 +641,7 @@ public class Main extends Application implements GameEngine.OnAction {
                     @Override
                     public void handle(ActionEvent event) {
                         try {
-                            saveGame();
+                            LoadSave.saveGame(level, time, score, heart);
                             page = 0;
                             level = 1;
                             start(primaryStage);
@@ -686,50 +677,13 @@ public class Main extends Application implements GameEngine.OnAction {
     }
     private void initialize(){
         //init ball
-        balls.clear();
-        ball = new Ball(sceneWidth, sceneHeight);
-        balls.add(ball);
-
+        ball = new Ball();
         //init break
         rect = new Break();
-
         //init blocks
-        blocks.clear();
-        chocos.clear();
-        boolean isExistHeartBlock = false;
-        boolean isExistBonusBlock = false;
-        boolean isExistStarBlock = false;
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < level + 1; j++) {
-                int r = new Random().nextInt(4);
-                int type;
-                if (r==1 && !isExistBonusBlock) {
-                    type = Block.BLOCK_CHOCO;
-                    isExistBonusBlock = true;
-                } else if (r==2 && !isExistHeartBlock) {
-                    type = Block.BLOCK_HEART;
-                    isExistHeartBlock = true;
-                } else if (r==3 && !isExistStarBlock){
-                    type = Block.BLOCK_STAR;
-                    isExistStarBlock = true;
-                } else {
-                    type = Block.BLOCK_NORMAL;
-                }
-                blocks.add(new Block(j, i, colors[new Random().nextInt(colors.length)], type));
-            }
-        }
-    }
-    private void saveGame() {
-        new LoadSave(level, time, score, heart).saveGame();
-    }
-    private void loadGame() {
-        LoadSave loadSave = new LoadSave(level, time, score, heart);
-        loadSave.loadGame();
-
-        level = loadSave.level;
-        time = loadSave.time;
-        score = loadSave.score;
-        heart = loadSave.heart;
+        block = new Block(level);
+        //init bonus
+        bonus = new Bonus();
     }
     @Override
     public void onUpdate() {
@@ -741,18 +695,21 @@ public class Main extends Application implements GameEngine.OnAction {
 
             rect.rect.setX(rect.xBreak);
             rect.rect.setY(rect.yBreak);
-            ball.ball.setCenterX(ball.xBall);
-            ball.ball.setCenterY(ball.yBall);
 
-            for (Bonus choco : chocos) {
-                choco.choco.setY(choco.y);
+            for (Ball.BallEntry ball : ball.balls){
+                ball.ball.setCenterX(ball.xBall);
+                ball.ball.setCenterY(ball.yBall);
+            }
+
+            for (Bonus.BonusEntry bonus : bonus.bonuses) {
+                bonus.rect.setY(bonus.y);
             }
         });
     }
     @Override
     public void onPhysicsUpdate() {
         //Clear the level
-        if (destroyedBlockCount == 2) {
+        if (block.checkClearLevel()) {
             //TODO win level todo...
             System.out.println("Next Level");
             engine.stop();
@@ -764,84 +721,81 @@ public class Main extends Application implements GameEngine.OnAction {
                 e.printStackTrace();
             }
         }
+        //Check ball
+        for (Ball.BallEntry ball : ball.balls){
+            //Update the movement of the ball and break
+            ball.setPhysicsToBall(rect, level, block.blocks);
 
-        //Update the movement of the ball and break
-        ball.setPhysicsToBall(rect, level, blocks);
-
-        //Check if the ball hits the block
-        if (ball.collideToBlock){
-            destroyedBlockCount++;
-            Block block = ball.collideBlock;
-            score += block.point;
-            if (block.type == Block.BLOCK_NORMAL){
-                new Score().showScore(block.x, block.y, block.point, this);
-            }
-            if (block.type == Block.BLOCK_CHOCO) {
-                new Score().showScore(block.x, block.y, block.point, this);
-                final Bonus choco = new Bonus(block.row, block.column);
-                choco.timeCreated = time;
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        root.getChildren().add(choco.choco);
-                    }
-                });
-                chocos.add(choco);
-            }
-
-            if (block.type == Block.BLOCK_STAR) {
-                new Score().showScore(block.x, block.y, block.point, this);
-                goldTime = time;
-                ball.ball.setFill(new ImagePattern(new Image("goldball.png")));
-                System.out.println("gold ball");
-                //root.getStyleClass().add("goldRoot");
-                isGoldStatus = true;
-            }
-
-            if (block.type == Block.BLOCK_HEART) {
-                new Score().showScore(block.x, block.y, block.point, this);
-                heart++;
-            }
-
-        }
-
-        //Check if the ball hits the bottom with golden ball
-        if (!isGoldStatus && ball.collideToBottomWall) {
-            //TODO gameover
-            heart--;
-            new Score().showScore(sceneWidth / 2, sceneHeight / 2, -1, this);
-
-            if (heart == 0) {
-                try {
-                    page = 2;
-                    start(primaryStage);
-                } catch (Exception e) {
-                    e.printStackTrace();
+            //Check if the ball hits the block
+            if (ball.collideToBlock){
+                Block.destroyedBlockCount++;
+                Block.BlockEntry block = ball.collideBlock;
+                score += block.point;
+                if (block.type == Block.BLOCK_NORMAL){
+                    new Score().showScore(block.x, block.y, block.point, this);
                 }
-                engine.stop();
+                if (block.type == Block.BLOCK_CHOCO) {
+                    new Score().showScore(block.x, block.y, block.point, this);
+                    Bonus.BonusEntry newBonus = new Bonus.BonusEntry(block.row, block.column, time);
+                    bonus.addBonus(newBonus);
+                    Platform.runLater(() -> {
+                        root.getChildren().add(newBonus.rect);
+                    });
+                }
+
+                if (block.type == Block.BLOCK_STAR) {
+                    new Score().showScore(block.x, block.y, block.point, this);
+                    goldTime = time;
+                    ball.ball.setFill(new ImagePattern(new Image("goldball.png")));
+                    System.out.println("gold ball");
+                    //root.getStyleClass().add("goldRoot");
+                    isGoldStatus = true;
+                }
+
+                if (block.type == Block.BLOCK_HEART) {
+                    new Score().showScore(block.x, block.y, block.point, this);
+                    heart++;
+                }
+
+            }
+
+            //Check if the ball hits the bottom with golden ball
+            if (!isGoldStatus && ball.collideToBottomWall) {
+                //TODO gameover
+                heart--;
+                new Score().showScore(sceneWidth / 2, sceneHeight / 2, -1, this);
+
+                if (heart == 0) {
+                    try {
+                        page = 2;
+                        start(primaryStage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    engine.stop();
+                }
+            }
+
+            // Check goldtime is over
+            if (isGoldStatus && time - goldTime > 5) {
+                ball.ball.setFill(new ImagePattern(new Image("ball.png")));
+                //root.getStyleClass().remove("goldRoot");
+                isGoldStatus = false;
             }
         }
-
-        // Check goldtime is over
-        if (isGoldStatus && time - goldTime > 5) {
-            ball.ball.setFill(new ImagePattern(new Image("ball.png")));
-            //root.getStyleClass().remove("goldRoot");
-            isGoldStatus = false;
-        }
-
         //Check break hits the bonus falling
-        for (Bonus choco : chocos) {
+        for (Bonus.BonusEntry choco : bonus.bonuses) {
             if (choco.taken){
                 continue;
             }
             if (choco.y > sceneHeight) {
-                choco.choco.setVisible(false);
+                choco.rect.setVisible(false);
                 continue;
             }
             if (rect.yBreak <= choco.y + Bonus.height && choco.x >= rect.xBreak && choco.x <= rect.xBreak + rect.breakWidth) {
                 System.out.println("You Got it and +3 score for you");
                 choco.taken = true;
-                choco.choco.setVisible(false);
+                choco.rect.setVisible(false);
                 score += 3;
                 new Score().showScore(choco.x, choco.y, 3, this);
                 continue;
