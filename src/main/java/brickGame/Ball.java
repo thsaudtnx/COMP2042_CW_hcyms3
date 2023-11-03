@@ -36,6 +36,8 @@ public class Ball {
         yBall = sceneHeight - 50;
         ball.setRadius(ballRadius);
         ball.setFill(new ImagePattern(new Image("ball.png")));
+        vX = 1.000;
+        vY = 1.000;
     }
 
     public void setPhysicsToBall(Break rect, int level, ArrayList<Block> blocks) {

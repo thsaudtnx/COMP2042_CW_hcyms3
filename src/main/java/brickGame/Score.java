@@ -96,7 +96,7 @@ public class Score {
             restart.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    main.restartGame();
+                    //main.restartGame();
                 }
             });
 

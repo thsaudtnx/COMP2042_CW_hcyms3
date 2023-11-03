@@ -86,14 +86,16 @@ public class GameEngine {
         timeThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    while (!isStopped) {
-                        time++;
-                        onAction.onTime(time);
+                while (true){
+                    try {
+                        if (!isStopped){
+                            time++;
+                            onAction.onTime(time);
+                        }
                         Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         });

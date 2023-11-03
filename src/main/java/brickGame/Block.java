@@ -19,7 +19,7 @@ public class Block implements Serializable {
     public int x;
     public int y;
 
-    public static int width = 100;
+    public static int width = 80;
     public static int height = 20;
     public static int paddingTop = 50;
     public static int paddingH = 50;
