@@ -12,6 +12,8 @@ public class Ball {
     public ArrayList<BallEntry> balls;
     private int sceneWidth = 500;
     private int sceneHeight = 700;
+    private boolean isGoldStatus = false;
+    private long goldTime = 0;
     public Ball(){
         balls = new ArrayList<BallEntry>();
         balls.add(new BallEntry());

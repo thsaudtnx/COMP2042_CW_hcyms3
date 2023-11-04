@@ -28,21 +28,21 @@ import java.util.Random;
 public class Main extends Application implements GameEngine.OnAction {
     final private int sceneWidth = 500;
     final private int sceneHeight = 700;
+    private GameEngine engine;
 
     private Ball ball;
     private Break rect;
     private Block block;
     private Bonus bonus;
 
-    private boolean isGoldStatus = false;
     private int page = 0; //0 home, 1 inGame, 2 after game
     private int level = 1;
     private int  heart = 3;
     private int  score = 0;
     private long time = 0;
     private long goldTime = 0;
+    private boolean isGoldStatus = false;
 
-    private GameEngine engine;
     public Pane root;
     private Scene scene;
     private Label titleLabel;
@@ -255,7 +255,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 time = 0;
                 goldTime = 0;
             }
-            initialize();
+            onInit();
 
             //Set Labels
             scoreLabel = new Label("Score: " + score);
@@ -675,7 +675,8 @@ public class Main extends Application implements GameEngine.OnAction {
             }
         }
     }
-    private void initialize(){
+    @Override
+    public void onInit(){
         //init ball
         ball = new Ball();
         //init break
@@ -687,27 +688,6 @@ public class Main extends Application implements GameEngine.OnAction {
     }
     @Override
     public void onUpdate() {
-        Platform.runLater(() -> {
-            scoreLabel.setText("Score: " + score);
-            heartLabel.setText("Heart : " + heart);
-            levelLabel.setText("Level : " + level);
-            timeLabel.setText("Time : " + time);
-
-            rect.rect.setX(rect.xBreak);
-            rect.rect.setY(rect.yBreak);
-
-            for (Ball.BallEntry ball : ball.balls){
-                ball.ball.setCenterX(ball.xBall);
-                ball.ball.setCenterY(ball.yBall);
-            }
-
-            for (Bonus.BonusEntry bonus : bonus.bonuses) {
-                bonus.rect.setY(bonus.y);
-            }
-        });
-    }
-    @Override
-    public void onPhysicsUpdate() {
         //Clear the level
         if (block.checkClearLevel()) {
             //TODO win level todo...
@@ -721,6 +701,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 e.printStackTrace();
             }
         }
+
         //Check ball
         for (Ball.BallEntry ball : ball.balls){
             //Update the movement of the ball and break
@@ -728,7 +709,6 @@ public class Main extends Application implements GameEngine.OnAction {
 
             //Check if the ball hits the block
             if (ball.collideToBlock){
-                Block.destroyedBlockCount++;
                 Block.BlockEntry block = ball.collideBlock;
                 score += block.point;
                 if (block.type == Block.BLOCK_NORMAL){
@@ -779,11 +759,12 @@ public class Main extends Application implements GameEngine.OnAction {
             // Check goldtime is over
             if (isGoldStatus && time - goldTime > 5) {
                 ball.ball.setFill(new ImagePattern(new Image("ball.png")));
-                //root.getStyleClass().remove("goldRoot");
+                root.getStyleClass().remove("goldRoot");
                 isGoldStatus = false;
             }
         }
-        //Check break hits the bonus falling
+
+        //Check break hits the bonus falling and add the score
         for (Bonus.BonusEntry choco : bonus.bonuses) {
             if (choco.taken){
                 continue;
@@ -796,12 +777,31 @@ public class Main extends Application implements GameEngine.OnAction {
                 System.out.println("You Got it and +3 score for you");
                 choco.taken = true;
                 choco.rect.setVisible(false);
-                score += 3;
                 new Score().showScore(choco.x, choco.y, 3, this);
                 continue;
             }
             choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
         }
+
+        //Update UI components
+        Platform.runLater(() -> {
+            scoreLabel.setText("Score: " + score);
+            heartLabel.setText("Heart : " + heart);
+            levelLabel.setText("Level : " + level);
+            timeLabel.setText("Time : " + time);
+
+            rect.rect.setX(rect.xBreak);
+            rect.rect.setY(rect.yBreak);
+
+            for (Ball.BallEntry ball : ball.balls){
+                ball.ball.setCenterX(ball.xBall);
+                ball.ball.setCenterY(ball.yBall);
+            }
+
+            for (Bonus.BonusEntry bonus : bonus.bonuses) {
+                bonus.rect.setY(bonus.y);
+            }
+        });
     }
     @Override
     public void onTime(long time) {

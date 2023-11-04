@@ -5,7 +5,6 @@ public class GameEngine {
     private OnAction onAction;
     private int fps = 15;
     private Thread updateThread;
-    private Thread physicsThread;
     public boolean isStopped = false;
 
     public void setOnAction(OnAction onAction) {
@@ -38,32 +37,10 @@ public class GameEngine {
         updateThread.start();
     }
 
-    private synchronized void PhysicsCalculation() {
-        physicsThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!physicsThread.isInterrupted()) {
-                    if (!isStopped){
-                        try {
-                            onAction.onPhysicsUpdate();
-                            Thread.sleep(fps);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
-
-        physicsThread.start();
-
-    }
-
     public void start() {
         System.out.println("Engine Start");
         time = 0;
         Update();
-        PhysicsCalculation();
         TimeStart();
         isStopped = false;
     }
@@ -77,9 +54,7 @@ public class GameEngine {
             isStopped = false;
         }
     }
-
     private long time = 0;
-
     private Thread timeThread;
 
     private void TimeStart() {
@@ -103,10 +78,8 @@ public class GameEngine {
     }
 
     public interface OnAction {
+        void onInit();
         void onUpdate();
-
-        void onPhysicsUpdate();
-
         void onTime(long time);
     }
 
