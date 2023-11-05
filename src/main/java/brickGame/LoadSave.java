@@ -1,29 +1,72 @@
 package brickGame;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class LoadSave {
-    final public static String savePath = "C:/Users/messi/saveGame";
-    final public static String fileName = "data.txt";
+    final public static String savePath = "C:/Users/messi/Desktop/brickGameData";
+    final public static String fileName = "savedData.obj";
+    static Data data;
     public static class Data implements Serializable{
         public static int level;
-        public static long time;
         public static int score;
+        public static long time;
         public static int heart;
-        public Data(int level, int score, int heart, long time){
+        public static Block blockClass;
+        public static Heart heartClass;
+        public static Bonus bonusClass;
+        public static Ball ballClass;
+        public static Break breakClass;
+        public Data(
+                int level,
+                int score,
+                long time,
+                int heart,
+                Block blockClass,
+                Heart heartClass,
+                Bonus bonusClass,
+                Ball ballClass,
+                Break breakClass
+
+        ){
             super();
             this.level = level;
-            this.time = time;
             this.score = score;
+            this.time = time;
             this.heart = heart;
+            this.blockClass = blockClass;
+            this.heartClass = heartClass;
+            this.bonusClass = bonusClass;
+            this.ballClass = ballClass;
+            this.breakClass = breakClass;
         }
     }
-    public static void saveGame(int level, long time, int score, int heart){
-        Data data = new Data(level, score, heart, time);
+    public static void saveGame(
+            int level,
+            int score,
+            long time,
+            int heart,
+            Block blockClass,
+            Heart heartClass,
+            Bonus bonusClass,
+            Ball ballClass,
+            Break breakClass
+    ){
+        data = new Data(
+                level,
+                score,
+                time,
+                heart,
+                blockClass,
+                heartClass,
+                bonusClass,
+                ballClass,
+                breakClass
+        );
+
 
         //Create a directory
         File directory = new File(savePath);
-
         if (!directory.exists()) {
             if (directory.mkdirs()) {
                 System.out.println("Directory created successfully.");
@@ -56,12 +99,7 @@ public class LoadSave {
         ObjectOutputStream outputStream = null;
         try {
             outputStream = new ObjectOutputStream(new FileOutputStream(file));
-            outputStream.writeInt(data.level);
-            outputStream.writeInt(data.score);
-            outputStream.writeInt(data.heart);
-            outputStream.writeLong(data.time);
-
-            //new Score().showMessage("Game Saved", Main.this);
+            outputStream.writeObject(data);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -72,15 +110,28 @@ public class LoadSave {
                 e.printStackTrace();
             }
         }
+        System.out.println("Game saved!");
+    }
+
+    public static boolean isExistSavedFile(){
+        File saveFile = new File(savePath, fileName); // Create a File object for the save file
+        if (!saveFile.exists()) {
+            System.out.println("Save file does not exist.");
+            return false; // Exit the method if the file doesn't exist
+        }
+        return true;
     }
     public static void loadGame() {
+        // Exit the method if the file doesn't exist
+        if (!isExistSavedFile()) return;
+
         try {
             ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(savePath, fileName)));
+            data = (Data) inputStream.readObject();
 
-            Data data = new Data(inputStream.readInt(), inputStream.readInt(), inputStream.readInt(), inputStream.readLong());
-
-            System.out.println("level : " + data.level + ", score : " + data.score + ", heart : " + data.heart + ", time : " + data.time);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

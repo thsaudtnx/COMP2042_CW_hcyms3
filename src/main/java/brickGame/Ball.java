@@ -7,7 +7,7 @@ import javafx.scene.shape.Circle;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Ball {
+public class Ball{
     public ArrayList<BallEntry> balls;
     private static int sceneWidth = 500;
     private static int sceneHeight = 700;

@@ -8,6 +8,45 @@ import javafx.scene.control.Label;
 //import sun.plugin2.message.Message;
 
 public class Score {
+    public void showCountDown(Main main, GameEngine engine){
+        Label label = new Label();
+        label.setTranslateX(250);
+        label.setTranslateY(300);
+        label.setVisible(true);
+        Platform.runLater(() -> {
+            main.root.getChildren().add(label);
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i=3;i>0;i--){
+                    for (int j= 0; j < 21; j++) {
+                        final int scaleValue = j;
+                        final double opacityValue = (20 - j) / 20.0;
+                        try {
+                            int finalI = i;
+                            Platform.runLater(() -> {
+                                label.setText(finalI + "");
+                                label.setScaleX(scaleValue);
+                                label.setScaleY(scaleValue);
+                                label.setOpacity(opacityValue);
+                            });
+                            Thread.sleep(15);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+                engine.start();
+            }
+        }).start();
+    }
 
     public void showScore(final double x, final double y, int score, Main main) {
         String sign;

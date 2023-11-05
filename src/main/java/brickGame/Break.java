@@ -16,9 +16,6 @@ public class Break {
     public double centerBreakX;
     public double xBreak;
     public double yBreak;
-    float oldXBreak;
-    private static int LEFT  = 1;
-    private static int RIGHT = 2;
     public Rectangle rect;
     public Break() {
         rect = new Rectangle();

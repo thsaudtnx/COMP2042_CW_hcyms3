@@ -33,10 +33,11 @@ public class Main extends Application implements GameEngine.OnAction {
     private GameEngine engine;
 
     private Ball ballClass;
-    private Break rect;
-    private Block block;
-    private Bonus bonus;
-    private Heart heartItem;
+    private Break breakClass;
+    private Block blockClass;
+    private Bonus bonusClass;
+    private Heart heartClass;
+    private boolean isLoad;
 
     private int page = 0; //0 home, 1 inGame, 2 after game
     private int level = 1;
@@ -60,7 +61,6 @@ public class Main extends Application implements GameEngine.OnAction {
     Button instructionButton;
     Button homeButton;
     Button rankingButton;
-    Button saveButton;
 
     public static void main(String[] args) {
         launch(args);
@@ -137,16 +137,16 @@ public class Main extends Application implements GameEngine.OnAction {
             loadGameButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    try {
-                        page = 1;
-                        LoadSave.loadGame();
-                        level = LoadSave.Data.level;
-                        score = LoadSave.Data.score;
-                        heart = LoadSave.Data.heart;
-                        time = LoadSave.Data.time;
-                        start(primaryStage);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (LoadSave.isExistSavedFile()){
+                        try {
+                            page = 1;
+                            isLoad = true;
+                            start(primaryStage);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //There is no saved file
                     }
                 }
             });
@@ -243,17 +243,32 @@ public class Main extends Application implements GameEngine.OnAction {
         }
         //In Game
         else if (page==1){
-            if (level==1){
-                heart = 3;
-                score = 0;
-                time = 0;
+            if (isLoad){
+                isLoad = false;
+                LoadSave.loadGame();
+                level = LoadSave.data.level;
+                score = LoadSave.data.score;
+                time = LoadSave.data.time;
+                heart = LoadSave.data.heart;
+                blockClass = LoadSave.data.blockClass;
+                heartClass = LoadSave.data.heartClass;
+                bonusClass = LoadSave.data.bonusClass;
+                ballClass = LoadSave.data.ballClass;
+                breakClass = LoadSave.data.breakClass;
             }
             else {
-                //initialize except score and heart and time
-                time = 0;
+                if (level==1){
+                    heart = 3;
+                    score = 0;
+                    time = 0;
+                }
+                else {
+                    //initialize except score and heart and time
+                    time = 0;
+                }
+                //Initialize
+                onInit();
             }
-            //Initialize
-            onInit();
 
             //Set Labels
             scoreLabel = new Label("Score: " + score);
@@ -282,13 +297,19 @@ public class Main extends Application implements GameEngine.OnAction {
                         heartLabel,
                         levelLabel,
                         timeLabel,
-                        rect.rect
+                        breakClass.rect
                 );
                 for (Ball.BallEntry ball : ballClass.balls){
                     root.getChildren().add(ball.circle);
                 }
-                for (Block.BlockEntry block : block.blocks) {
+                for (Block.BlockEntry block : blockClass.blocks) {
                     root.getChildren().add(block.rect);
+                }
+                for (Bonus.BonusEntry bonus : bonusClass.bonuses){
+                    root.getChildren().add(bonus.rect);
+                }
+                for (Heart.HeartEntry heart : heartClass.hearts){
+                    root.getChildren().add(heart.rect);
                 }
 
                 //Set the main scene
@@ -299,10 +320,23 @@ public class Main extends Application implements GameEngine.OnAction {
                     public void handle(KeyEvent keyEvent) {
                         switch (keyEvent.getCode()) {
                             case LEFT:
-                                rect.move(KeyCode.LEFT);
+                                breakClass.move(KeyCode.LEFT);
                                 break;
                             case RIGHT:
-                                rect.move(KeyCode.RIGHT);
+                                breakClass.move(KeyCode.RIGHT);
+                                break;
+                            case S:
+                                LoadSave.saveGame(
+                                        level,
+                                        score,
+                                        time,
+                                        heart,
+                                        blockClass,
+                                        heartClass,
+                                        bonusClass,
+                                        ballClass,
+                                        breakClass
+                                );
                                 break;
                             case SPACE:
                                 engine.stop();
@@ -415,7 +449,9 @@ public class Main extends Application implements GameEngine.OnAction {
             engine = new GameEngine();
             engine.setOnAction(this);
             engine.setFps(120);
-            engine.start();
+
+            //Count down 3 seconds and engine.start()
+            new Score().showCountDown(this, engine);
         }
         //After the game
         else if (page==2){
@@ -586,31 +622,22 @@ public class Main extends Application implements GameEngine.OnAction {
                 //set buttons
                 nextGameButton = new Button();
                 homeButton = new Button();
-                saveButton = new Button();
                 Image nextGameImage = new Image("nextLevelButton.png");
                 Image homeImage = new Image("homeButton.png");
-                Image saveGameImage = new Image("saveGameButton.png");
                 ImageView nextGameImageView = new ImageView(nextGameImage);
                 ImageView homeImageView = new ImageView(homeImage);
-                ImageView saveGameView = new ImageView(saveGameImage);
                 nextGameImageView.setFitWidth(nextGameImage.getWidth() * 0.3);
                 nextGameImageView.setFitHeight(nextGameImage.getHeight() * 0.3);
                 homeImageView.setFitWidth(homeImage.getWidth() * 0.3);
                 homeImageView.setFitHeight(homeImage.getHeight() * 0.3);
-                saveGameView.setFitWidth(saveGameImage.getWidth() * 0.3);
-                saveGameView.setFitHeight(saveGameImage.getHeight() * 0.3);
                 nextGameButton.setGraphic(nextGameImageView);
                 homeButton.setGraphic(homeImageView);
-                saveButton.setGraphic(saveGameView);
                 nextGameButton.setTranslateX(170);
                 nextGameButton.setTranslateY(300);
                 homeButton.setTranslateX(170);
                 homeButton.setTranslateY(360);
-                saveButton.setTranslateX(170);
-                saveButton.setTranslateY(420);
                 nextGameButton.setVisible(true);
                 homeButton.setVisible(true);
-                saveButton.setVisible(true);
                 nextGameButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
@@ -635,19 +662,6 @@ public class Main extends Application implements GameEngine.OnAction {
                         }
                     }
                 });
-                saveButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try {
-                            LoadSave.saveGame(level, time, score, heart);
-                            page = 0;
-                            level = 1;
-                            start(primaryStage);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
 
                 //Set the root pane
                 root = new Pane();
@@ -656,8 +670,7 @@ public class Main extends Application implements GameEngine.OnAction {
                     root.getChildren().addAll(
                             titleLabel,
                             nextGameButton,
-                            homeButton,
-                            saveButton
+                            homeButton
                     );
 
                     //Set the main scene
@@ -678,18 +691,18 @@ public class Main extends Application implements GameEngine.OnAction {
         //init ball
         ballClass = new Ball();
         //init break
-        rect = new Break();
+        breakClass = new Break();
         //init blocks
-        block = new Block(level);
+        blockClass = new Block(level);
         //init bonus
-        bonus = new Bonus();
+        bonusClass = new Bonus();
         //init heartItem
-        heartItem = new Heart();
+        heartClass = new Heart();
     }
     @Override
     public void onUpdate() {
         //Clear the level
-        if (block.checkClearLevel()) {
+        if (blockClass.checkClearLevel()) {
             //TODO win level todo...
             System.out.println("Next Level");
             engine.stop();
@@ -706,7 +719,7 @@ public class Main extends Application implements GameEngine.OnAction {
         Ball.BallEntry newBall = null;
         for (Ball.BallEntry ball : ballClass.balls){
             //Update the movement of the ball and break
-            ball.setPhysicsToBall(rect, level, block.blocks);
+            ball.setPhysicsToBall(breakClass, level, blockClass.blocks);
 
             //Check if the ball hits the block
             if (ball.collideToBlock){
@@ -716,7 +729,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 if (block.type == Block.BLOCK_NORMAL){}
                 if (block.type == Block.BLOCK_CHOCO) {
                     Bonus.BonusEntry newBonus = new Bonus.BonusEntry(block.row, block.column, time);
-                    bonus.addBonus(newBonus);
+                    bonusClass.addBonus(newBonus);
                     Platform.runLater(() -> {
                         root.getChildren().add(newBonus.rect);
                     });
@@ -726,7 +739,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 }
                 if (block.type == Block.BLOCK_HEART) {
                     Heart.HeartEntry newHeart = new Heart.HeartEntry(block.row, block.column, time);
-                    heartItem.addHeart(newHeart);
+                    heartClass.addHeart(newHeart);
                     Platform.runLater(() -> {
                         root.getChildren().add(newHeart.rect);
                     });
@@ -765,7 +778,7 @@ public class Main extends Application implements GameEngine.OnAction {
         ballClass.checkGoldTimeOver(time);
 
         //Check break hits the bonus falling and add the score
-        for (Bonus.BonusEntry choco : bonus.bonuses) {
+        for (Bonus.BonusEntry choco : bonusClass.bonuses) {
             if (choco.taken){
                 continue;
             }
@@ -773,7 +786,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 choco.rect.setVisible(false);
                 continue;
             }
-            if (rect.yBreak <= choco.y + Bonus.height && choco.x >= rect.xBreak && choco.x <= rect.xBreak + rect.breakWidth) {
+            if (breakClass.yBreak <= choco.y + Bonus.height && choco.x >= breakClass.xBreak && choco.x <= breakClass.xBreak + breakClass.breakWidth) {
                 System.out.println("You Got it and +3 score for you");
                 choco.taken = true;
                 choco.rect.setVisible(false);
@@ -784,7 +797,7 @@ public class Main extends Application implements GameEngine.OnAction {
         }
 
         //Check break hits the heartItem falling and add the heart
-        for (Heart.HeartEntry heartItem : heartItem.hearts) {
+        for (Heart.HeartEntry heartItem : heartClass.hearts) {
             if (heartItem.taken){
                 continue;
             }
@@ -792,7 +805,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 heartItem.rect.setVisible(false);
                 continue;
             }
-            if (rect.yBreak <= heartItem.y + Heart.height && heartItem.x >= rect.xBreak && heartItem.x <= rect.xBreak + rect.breakWidth) {
+            if (breakClass.yBreak <= heartItem.y + Heart.height && heartItem.x >= breakClass.xBreak && heartItem.x <= breakClass.xBreak + breakClass.breakWidth) {
                 heartItem.taken = true;
                 heartItem.rect.setVisible(false);
                 new Score().showMessage("+ Heart", this);
@@ -811,8 +824,8 @@ public class Main extends Application implements GameEngine.OnAction {
             timeLabel.setText("Time : " + time);
 
             //Update the position of the break
-            rect.rect.setX(rect.xBreak);
-            rect.rect.setY(rect.yBreak);
+            breakClass.rect.setX(breakClass.xBreak);
+            breakClass.rect.setY(breakClass.yBreak);
 
             //Update the position of balls
             for (Ball.BallEntry ball : ballClass.balls){
@@ -821,12 +834,12 @@ public class Main extends Application implements GameEngine.OnAction {
             }
 
             //Update the position of bonuses
-            for (Bonus.BonusEntry bonus : bonus.bonuses) {
+            for (Bonus.BonusEntry bonus : bonusClass.bonuses) {
                 bonus.rect.setY(bonus.y);
             }
 
             //Update the position of heartItems
-            for(Heart.HeartEntry heart : heartItem.hearts){
+            for(Heart.HeartEntry heart : heartClass.hearts){
                 heart.rect.setY(heart.y);
             }
         });
