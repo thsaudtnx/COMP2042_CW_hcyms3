@@ -4,7 +4,9 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,18 +32,17 @@ public class Main extends Application implements GameEngine.OnAction {
     final private int sceneHeight = 700;
     private GameEngine engine;
 
-    private Ball ball;
+    private Ball ballClass;
     private Break rect;
     private Block block;
     private Bonus bonus;
+    private Heart heartItem;
 
     private int page = 0; //0 home, 1 inGame, 2 after game
     private int level = 1;
-    private int  heart = 3;
+    private int heart = 3;
     private int  score = 0;
     private long time = 0;
-    private long goldTime = 0;
-    private boolean isGoldStatus = false;
 
     public Pane root;
     private Scene scene;
@@ -245,16 +246,13 @@ public class Main extends Application implements GameEngine.OnAction {
             if (level==1){
                 heart = 3;
                 score = 0;
-                isGoldStatus = false;
                 time = 0;
-                goldTime = 0;
             }
             else {
                 //initialize except score and heart and time
-                isGoldStatus = false;
                 time = 0;
-                goldTime = 0;
             }
+            //Initialize
             onInit();
 
             //Set Labels
@@ -286,8 +284,8 @@ public class Main extends Application implements GameEngine.OnAction {
                         timeLabel,
                         rect.rect
                 );
-                for (Ball.BallEntry ball : ball.balls){
-                    root.getChildren().add(ball.ball);
+                for (Ball.BallEntry ball : ballClass.balls){
+                    root.getChildren().add(ball.circle);
                 }
                 for (Block.BlockEntry block : block.blocks) {
                     root.getChildren().add(block.rect);
@@ -678,13 +676,15 @@ public class Main extends Application implements GameEngine.OnAction {
     @Override
     public void onInit(){
         //init ball
-        ball = new Ball();
+        ballClass = new Ball();
         //init break
         rect = new Break();
         //init blocks
         block = new Block(level);
         //init bonus
         bonus = new Bonus();
+        //init heartItem
+        heartItem = new Heart();
     }
     @Override
     public void onUpdate() {
@@ -703,7 +703,8 @@ public class Main extends Application implements GameEngine.OnAction {
         }
 
         //Check ball
-        for (Ball.BallEntry ball : ball.balls){
+        Ball.BallEntry newBall = null;
+        for (Ball.BallEntry ball : ballClass.balls){
             //Update the movement of the ball and break
             ball.setPhysicsToBall(rect, level, block.blocks);
 
@@ -711,36 +712,32 @@ public class Main extends Application implements GameEngine.OnAction {
             if (ball.collideToBlock){
                 Block.BlockEntry block = ball.collideBlock;
                 score += block.point;
-                if (block.type == Block.BLOCK_NORMAL){
-                    new Score().showScore(block.x, block.y, block.point, this);
-                }
+                new Score().showScore(block.x, block.y, block.point, this);
+                if (block.type == Block.BLOCK_NORMAL){}
                 if (block.type == Block.BLOCK_CHOCO) {
-                    new Score().showScore(block.x, block.y, block.point, this);
                     Bonus.BonusEntry newBonus = new Bonus.BonusEntry(block.row, block.column, time);
                     bonus.addBonus(newBonus);
                     Platform.runLater(() -> {
                         root.getChildren().add(newBonus.rect);
                     });
                 }
-
                 if (block.type == Block.BLOCK_STAR) {
-                    new Score().showScore(block.x, block.y, block.point, this);
-                    goldTime = time;
-                    ball.ball.setFill(new ImagePattern(new Image("goldball.png")));
-                    System.out.println("gold ball");
-                    //root.getStyleClass().add("goldRoot");
-                    isGoldStatus = true;
+                    ballClass.setGoldTime(time);
                 }
-
                 if (block.type == Block.BLOCK_HEART) {
-                    new Score().showScore(block.x, block.y, block.point, this);
-                    heart++;
+                    Heart.HeartEntry newHeart = new Heart.HeartEntry(block.row, block.column, time);
+                    heartItem.addHeart(newHeart);
+                    Platform.runLater(() -> {
+                        root.getChildren().add(newHeart.rect);
+                    });
                 }
-
+                if (block.type == Block.BLOCK_BALL){
+                    newBall = new Ball.BallEntry(block.row, block.column);
+                }
             }
 
-            //Check if the ball hits the bottom with golden ball
-            if (!isGoldStatus && ball.collideToBottomWall) {
+            //Check if any of the ball hits the bottom with golden ball
+            if (ball.isMinusHeart()) {
                 //TODO gameover
                 heart--;
                 new Score().showScore(sceneWidth / 2, sceneHeight / 2, -1, this);
@@ -755,14 +752,17 @@ public class Main extends Application implements GameEngine.OnAction {
                     engine.stop();
                 }
             }
-
-            // Check goldtime is over
-            if (isGoldStatus && time - goldTime > 5) {
-                ball.ball.setFill(new ImagePattern(new Image("ball.png")));
-                root.getStyleClass().remove("goldRoot");
-                isGoldStatus = false;
-            }
         }
+        if (newBall != null){
+            ballClass.addBall(newBall);
+            Ball.BallEntry finalNewBall = newBall;
+            Platform.runLater(() -> {
+                root.getChildren().add(finalNewBall.circle);
+            });
+        }
+
+        // Check goldtime is over
+        ballClass.checkGoldTimeOver(time);
 
         //Check break hits the bonus falling and add the score
         for (Bonus.BonusEntry choco : bonus.bonuses) {
@@ -783,23 +783,51 @@ public class Main extends Application implements GameEngine.OnAction {
             choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
         }
 
+        //Check break hits the heartItem falling and add the heart
+        for (Heart.HeartEntry heartItem : heartItem.hearts) {
+            if (heartItem.taken){
+                continue;
+            }
+            if (heartItem.y > sceneHeight) {
+                heartItem.rect.setVisible(false);
+                continue;
+            }
+            if (rect.yBreak <= heartItem.y + Heart.height && heartItem.x >= rect.xBreak && heartItem.x <= rect.xBreak + rect.breakWidth) {
+                heartItem.taken = true;
+                heartItem.rect.setVisible(false);
+                new Score().showMessage("+ Heart", this);
+                heart++;
+                continue;
+            }
+            heartItem.y += ((time - heartItem.timeCreated) / 1000.000) + 1.000;
+        }
+
         //Update UI components
         Platform.runLater(() -> {
+            //Update the labels
             scoreLabel.setText("Score: " + score);
             heartLabel.setText("Heart : " + heart);
             levelLabel.setText("Level : " + level);
             timeLabel.setText("Time : " + time);
 
+            //Update the position of the break
             rect.rect.setX(rect.xBreak);
             rect.rect.setY(rect.yBreak);
 
-            for (Ball.BallEntry ball : ball.balls){
-                ball.ball.setCenterX(ball.xBall);
-                ball.ball.setCenterY(ball.yBall);
+            //Update the position of balls
+            for (Ball.BallEntry ball : ballClass.balls){
+                ball.circle.setCenterX(ball.xBall);
+                ball.circle.setCenterY(ball.yBall);
             }
 
+            //Update the position of bonuses
             for (Bonus.BonusEntry bonus : bonus.bonuses) {
                 bonus.rect.setY(bonus.y);
+            }
+
+            //Update the position of heartItems
+            for(Heart.HeartEntry heart : heartItem.hearts){
+                heart.rect.setY(heart.y);
             }
         });
     }

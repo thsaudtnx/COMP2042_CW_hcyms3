@@ -16,12 +16,13 @@ public class Block {
         blocks = new ArrayList<>();
         destroyedBlockCount = 0;
 
+        boolean isExistBallBlock = false;
         boolean isExistHeartBlock = false;
         boolean isExistBonusBlock = false;
         boolean isExistStarBlock = false;
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < level + 1; j++) {
-                int r = new Random().nextInt(4);
+                int r = new Random().nextInt(5);
                 int type;
                 if (r==1 && !isExistBonusBlock) {
                     type = Block.BLOCK_CHOCO;
@@ -32,6 +33,9 @@ public class Block {
                 } else if (r==3 && !isExistStarBlock){
                     type = Block.BLOCK_STAR;
                     isExistStarBlock = true;
+                } else if (r==4 && !isExistBallBlock){
+                  type = Block.BLOCK_BALL;
+                  isExistBallBlock = true;
                 } else {
                     type = Block.BLOCK_NORMAL;
                 }
@@ -50,7 +54,8 @@ public class Block {
     public static int BLOCK_CHOCO = 100;
     public static int BLOCK_STAR = 101;
     public static int BLOCK_HEART = 102;
-    public static class BlockEntry implements Serializable{
+    public static int BLOCK_BALL = 103;
+    public class BlockEntry implements Serializable{
         public int row;
         public int column;
         public boolean isDestroyed = false;
@@ -95,6 +100,11 @@ public class Block {
                 ImagePattern pattern = new ImagePattern(image);
                 rect.setFill(pattern);
                 point = 1;
+            } else if (type == BLOCK_BALL) {
+              Image image = new Image("ballBlock.jpg");
+              ImagePattern pattern = new ImagePattern(image);
+              rect.setFill(pattern);
+              point = 1;
             } else { //type == BLOCK_NORMAL
                 rect.setFill(color);
                 point = 1;

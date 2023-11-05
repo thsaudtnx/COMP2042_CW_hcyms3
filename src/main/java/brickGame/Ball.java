@@ -1,6 +1,5 @@
 package brickGame;
 
-import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -10,19 +9,42 @@ import java.util.ArrayList;
 
 public class Ball {
     public ArrayList<BallEntry> balls;
-    private int sceneWidth = 500;
-    private int sceneHeight = 700;
-    private boolean isGoldStatus = false;
-    private long goldTime = 0;
+    private static int sceneWidth = 500;
+    private static int sceneHeight = 700;
+    private static boolean isGoldStatus = false;
+    private static long goldTime = 0;
     public Ball(){
         balls = new ArrayList<BallEntry>();
+        isGoldStatus = false;
+        goldTime = 0;
         balls.add(new BallEntry());
     }
-    public class BallEntry implements Serializable {
-        public Circle ball;
+    public void checkGoldTimeOver(long time){
+        if (isGoldStatus && time - goldTime > 5) {
+            for (BallEntry ball : balls){
+                ball.circle.setFill(new ImagePattern(new Image("ball.png")));
+            }
+            //root.getStyleClass().remove("goldRoot");
+            isGoldStatus = false;
+        }
+    }
+    public void setGoldTime(long time){
+        goldTime = time;
+        isGoldStatus = true;
+        for (BallEntry ball : balls){
+            ball.circle.setFill(new ImagePattern(new Image("goldball.png")));
+        }
+        System.out.println("gold ball");
+        //root.getStyleClass().add("goldRoot");
+    }
+    public void addBall(BallEntry newBall){
+        balls.add(newBall);
+    }
+    public static class BallEntry implements Serializable {
+        public Circle circle;
         public double xBall;
         public double yBall;
-        public static int ballRadius = 5;
+        public int ballRadius = 5;
         public boolean goDownBall = true;
         public boolean goRightBall = true;
         public boolean collideToBlock = false;
@@ -38,15 +60,23 @@ public class Ball {
         }
 
         public BallEntry() {
-            ball = new Circle();
+            circle = new Circle();
             xBall = (sceneWidth - ballRadius) / 2;
             yBall = sceneHeight - 50;
-            ball.setRadius(ballRadius);
-            ball.setFill(new ImagePattern(new Image("ball.png")));
+            circle.setRadius(ballRadius);
+            circle.setFill(new ImagePattern(new Image("ball.png")));
             vX = 1.000;
             vY = 1.000;
         }
-
+        public BallEntry(int row, int column){
+            circle = new Circle();
+            xBall = (column * (Block.width)) + Block.paddingHeight + (Block.width / 2) - 15;
+            yBall = (row * (Block.height)) + Block.paddingTop + (Block.height / 2) - 15;
+            circle.setRadius(ballRadius);
+            circle.setFill(new ImagePattern(new Image("ball.png")));
+            vX = 1.000;
+            vY = 1.000;
+        }
         public void setPhysicsToBall(Break rect, int level, ArrayList<Block.BlockEntry> blocks) {
             //v = ((time - hitTime) / 1000.000) + 1.000;
             if (goDownBall) {
@@ -71,7 +101,7 @@ public class Ball {
                 return;
             }
             //Ball collides to the bottom wall
-            if (yBall + ballRadius >= sceneHeight) {
+            if (yBall + ballRadius >= 700) {
                 //System.out.println("Ball hit the bottom wall");
                 collideToBottomWall = true;
                 goDownBall = false;
@@ -113,19 +143,19 @@ public class Ball {
                     //If the ball hits the block
                     if (ballRight >= blockLeft && ballLeft <= blockRight && ballTop <= blockBottom && ballBottom >= blockTop){
                         if (ballBottom == blockTop) {
-                            //System.out.println("Ball hit the top block");
+                            System.out.println("Ball hit the top block");
                             goDownBall = false;
                         }
                         else if (ballTop == blockBottom) {
-                            //System.out.println("Ball hit the bottom block");
+                            System.out.println("Ball hit the bottom block");
                             goDownBall = true;
                         }
-                        else if (ballRight >= blockLeft) {
-                            //System.out.println("Ball hit the left block");
+                        else if (ballRight >= blockLeft && ballLeft < blockLeft) {
+                            System.out.println("Ball hit the left block");
                             goRightBall = false;
                         }
-                        else { //ballLeft <= blockRight
-                            //System.out.println("Ball hit the right block");
+                        else if (ballLeft <= blockRight && ballRight > blockRight){
+                            System.out.println("Ball hit the right block");
                             goRightBall = true;
                         }
                         collideToBlock = true;
@@ -168,6 +198,9 @@ public class Ball {
                 goDownBall = false;
                 return;
             }
+        }
+        public boolean isMinusHeart(){
+            return !isGoldStatus && collideToBottomWall;
         }
     }
 }
