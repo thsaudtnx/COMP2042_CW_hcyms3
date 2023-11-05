@@ -1,7 +1,6 @@
 package brickGame;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class LoadSave {
     final public static String savePath = "C:/Users/messi/Desktop/brickGameData";
@@ -128,7 +127,6 @@ public class LoadSave {
         try {
             ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(new File(savePath, fileName)));
             data = (Data) inputStream.readObject();
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

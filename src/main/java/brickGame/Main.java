@@ -4,9 +4,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,20 +14,15 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class Main extends Application implements GameEngine.OnAction {
     final private int sceneWidth = 500;
     final private int sceneHeight = 700;
     private GameEngine engine;
+    private Ranking ranking;
 
     private Ball ballClass;
     private Break breakClass;
@@ -131,7 +123,31 @@ public class Main extends Application implements GameEngine.OnAction {
             rankingButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    System.out.println("Ranking On");
+                    ranking = new Ranking();
+                    System.out.println(ranking.getFormattedRanking());
+                    //Set popup stage
+                    Stage popupStage = new Stage();
+                    popupStage.initModality(Modality.APPLICATION_MODAL);
+                    popupStage.setResizable(false);
+                    popupStage.setTitle("Ranking");
+                    popupStage.setX(600);  // Set X coordinate
+                    popupStage.setY(200);  // Set Y coordinate
+
+                    Platform.runLater(() -> {
+                        // Design the content of the popup (a simple example with a label)
+                        VBox popupLayout = new VBox();
+                        popupLayout.setSpacing(10);
+                        Label headLabel = new Label("Ranking\tUsername\tScore\tRecord\tDateTime");
+                        Label rankingLabel = new Label(ranking.getFormattedRanking());
+                        popupLayout.getChildren().addAll(headLabel, rankingLabel);
+
+                        //Set a popup scene
+                        Scene popupScene = new Scene(popupLayout, 300, 200);
+                        popupStage.setScene(popupScene);
+
+                        // Show the popup
+                        popupStage.show();
+                    });
                 }
             });
             loadGameButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -455,9 +471,8 @@ public class Main extends Application implements GameEngine.OnAction {
         }
         //After the game
         else if (page==2){
-            //Clear the last level
-            if (level==11){
-                //new Score().showWin(this);
+            //Clear the last level or GameOver
+            if (level==11 || heart==0){
                 //Set Label
                 titleLabel = new Label();
                 scoreLabel = new Label("Score : " + score);
@@ -466,7 +481,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 timeLabel.setTextFill(Color.WHITE);
                 scoreLabel.setStyle("-fx-font-size: 24px;");
                 timeLabel.setStyle("-fx-font-size: 24px;");
-                Image titleImage = new Image("completeTitle.png");
+                Image titleImage = heart==0 ? new Image("gameOver.png") : new Image("completeTitle.png");
                 ImageView titleImageView = new ImageView(titleImage);
                 titleImageView.setFitWidth(titleImage.getWidth() * 0.5);
                 titleImageView.setFitHeight(titleImage.getHeight() * 0.5);
@@ -474,9 +489,9 @@ public class Main extends Application implements GameEngine.OnAction {
                 titleLabel.setTranslateX(120);
                 titleLabel.setTranslateY(120);
                 scoreLabel.setTranslateX(200);
-                scoreLabel.setTranslateY(250);
+                scoreLabel.setTranslateY(300);
                 timeLabel.setTranslateX(200);
-                timeLabel.setTranslateY(300);
+                timeLabel.setTranslateY(350);
                 titleLabel.setVisible(true);
                 scoreLabel.setVisible(true);
                 timeLabel.setVisible(true);
@@ -492,7 +507,7 @@ public class Main extends Application implements GameEngine.OnAction {
                     System.out.println("Entered Username: " + username);
                     // You can handle the entered username as needed
 
-                    Ranking ranking = new Ranking();
+                    ranking = new Ranking();
                     ranking.addEntry(username, score, time);
                 });
 
@@ -535,65 +550,6 @@ public class Main extends Application implements GameEngine.OnAction {
                             inputLayout,
                             homeButton
                     );
-
-                    //Set the main scene
-                    scene = new Scene(root, sceneWidth, sceneHeight);
-                    //scene.getStylesheets().add("style.css");
-
-                    //Set the primary stage
-                    primaryStage.setTitle("Brick Game");
-                    primaryStage.setScene(scene);
-                    primaryStage.setResizable(false);
-                    primaryStage.show();
-                });
-            }
-            //GameOver
-            else if (heart==0){
-                //new Score().showGameOver(this);
-                //Set Label
-                titleLabel = new Label();
-                Image titleImage = new Image("gameOver.png");
-                ImageView titleImageView = new ImageView(titleImage);
-                titleImageView.setFitWidth(titleImage.getWidth() * 0.5);
-                titleImageView.setFitHeight(titleImage.getHeight() * 0.5);
-                titleLabel.setGraphic(titleImageView);
-                titleLabel.setTranslateX(120);
-                titleLabel.setTranslateY(120);
-                titleLabel.setVisible(true);
-
-                //set buttons
-                homeButton = new Button();
-                Image homeImage = new Image("homeButton.png");
-                ImageView homeImageView = new ImageView(homeImage);
-                homeImageView.setFitWidth(homeImage.getWidth() * 0.3);
-                homeImageView.setFitHeight(homeImage.getHeight() * 0.3);
-                homeButton.setGraphic(homeImageView);
-                homeButton.setTranslateX(170);
-                homeButton.setTranslateY(400);
-                homeButton.setVisible(true);
-                homeButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try {
-                            page = 0;
-                            level = 1;
-                            start(primaryStage);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                //Set the root pane
-                root = new Pane();
-                root.setStyle("-fx-background-color: black;");
-
-                Platform.runLater(() -> {
-                    root.getChildren().addAll(
-                            titleLabel,
-                            homeButton
-                    );
-
 
                     //Set the main scene
                     scene = new Scene(root, sceneWidth, sceneHeight);
