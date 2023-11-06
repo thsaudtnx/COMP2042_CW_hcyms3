@@ -1,8 +1,11 @@
 package brickGame;
 
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,11 +16,17 @@ public class Ball{
     private static int sceneHeight = 700;
     private static boolean isGoldStatus = false;
     private static long goldTime = 0;
+    private static MediaPlayer ballSound;
+    private static String ballSoundPath = "/ball.mp3";
     public Ball(){
         balls = new ArrayList<BallEntry>();
         isGoldStatus = false;
         goldTime = 0;
         balls.add(new BallEntry());
+
+        String path = getClass().getResource(ballSoundPath).toExternalForm();
+        ballSound = new MediaPlayer(new Media(path));
+
     }
     public void checkGoldTimeOver(long time){
         if (isGoldStatus && time - goldTime > 5) {
@@ -96,13 +105,15 @@ public class Ball{
             //Ball hits the wall
             //Ball collides to the top wall
             if (yBall - ballRadius <= 0) {
-                //System.out.println("Ball hit the top wall");
                 goDownBall = true;
+                ballSound.seek(Duration.ZERO);
+                ballSound.play();
                 return;
             }
             //Ball collides to the bottom wall
             if (yBall + ballRadius >= 700) {
-                //System.out.println("Ball hit the bottom wall");
+                ballSound.seek(Duration.ZERO);
+                ballSound.play();
                 collideToBottomWall = true;
                 goDownBall = false;
                 return;
@@ -110,20 +121,24 @@ public class Ball{
 
             //Ball collides the right wall
             if (xBall + ballRadius >= sceneWidth) {
-                //System.out.println("Ball hit the right wall");
+                ballSound.seek(Duration.ZERO);
+                ballSound.play();
                 goRightBall = false;
                 return;
             }
 
             //Ball collides the left wall
             if (xBall - ballRadius <= 0) {
-                //System.out.println("Ball hit the left wall");
+                ballSound.seek(Duration.ZERO);
+                ballSound.play();
                 goRightBall = true;
                 return;
             }
 
             //Ball hits the block
             if (yBall + ballRadius >= Block.paddingTop && yBall - ballRadius <= (Block.height * (level + 1)) + Block.paddingTop) {
+                ballSound.seek(Duration.ZERO);
+                ballSound.play();
                 for (final Block.BlockEntry block : blocks) {
                     //if the block is already destroyed
                     if (block.isDestroyed){
@@ -171,7 +186,8 @@ public class Ball{
 
             //Ball hits the break
             if (yBall >= rect.yBreak - ballRadius && rect.xBreak <= xBall + ballRadius && xBall - ballRadius <= rect.xBreak + rect.breakWidth) {
-                //System.out.println("Ball hit the break");
+                ballSound.seek(Duration.ZERO);
+                ballSound.play();
 
                 //hitTime = time;
                 double relation = (xBall - rect.centerBreakX) / (rect.breakWidth / 2);

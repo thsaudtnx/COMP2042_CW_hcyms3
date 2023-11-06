@@ -53,6 +53,7 @@ public class Main extends Application implements GameEngine.OnAction {
     Button instructionButton;
     Button homeButton;
     Button rankingButton;
+    BackgroundMusic backgroundMusic;
 
     public static void main(String[] args) {
         launch(args);
@@ -155,6 +156,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 public void handle(ActionEvent event) {
                     if (LoadSave.isExistSavedFile()){
                         try {
+                            backgroundMusic.stop();
                             page = 1;
                             isLoad = true;
                             start(primaryStage);
@@ -170,6 +172,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 @Override
                 public void handle(ActionEvent event) {
                     try {
+                        backgroundMusic.stop();
                         page = 1;
                         level=1;
                         start(primaryStage);
@@ -229,6 +232,10 @@ public class Main extends Application implements GameEngine.OnAction {
                     new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
             );
             root.setBackground(new Background(background));
+
+            //Set background music
+            backgroundMusic = new BackgroundMusic(page);
+            backgroundMusic.start();
 
             //Draw UI Components
             Platform.runLater(() -> {
@@ -306,6 +313,10 @@ public class Main extends Application implements GameEngine.OnAction {
                     new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
             );
             root.setBackground(new Background(background));
+
+            //Set background music
+            backgroundMusic = new BackgroundMusic(page);
+            backgroundMusic.start();
 
             Platform.runLater(() -> {
                 root.getChildren().addAll(
@@ -421,6 +432,7 @@ public class Main extends Application implements GameEngine.OnAction {
                                     public void handle(ActionEvent actionEvent) {
                                         System.out.println("home");
                                         popupStage.close();
+                                        backgroundMusic.stop();
 
                                         try {
                                             page = 0;
@@ -640,6 +652,8 @@ public class Main extends Application implements GameEngine.OnAction {
                     primaryStage.show();
                 });
             }
+            //Turn off background music
+            backgroundMusic.stop();
         }
     }
     @Override
