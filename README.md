@@ -12,7 +12,7 @@ game (Brick Breaker) using JavaFX
 UI Features
 - Home Page
   - Title Label
-  - Background Music and Wall Paper
+  - Background Music and Image
   - Buttons like New Game, Load Game, Ranking, Instruction and Quit
 - In-Game Page
   - Background Music
@@ -27,8 +27,12 @@ UI Features
 
 <div style="display:flex; margin-right:10px;">
   <img alt="Alt text" src="/src/main/resources/breakGame_homePage.png" title="Optional title" width="200"/>
+  <img alt="Alt text" src="/src/main/resources/breakGame_homePage_ranking.png" title="Optional title" width="200"/>
+  <img alt="Alt text" src="/src/main/resources/breakGame_homePage_instruction.png" title="Optional title" width="200"/>
   <img alt="Alt text" src="/src/main/resources/breakGame_gamePage.png" title="Optional title" width="200"/>
-  <img alt="Alt text" src="/src/main/resources/breakGame_menuPage.png" title="Optional title" width="200"/>
+  <img alt="Alt text" src="/src/main/resources/breakGame_gamePage_pause.png" title="Optional title" width="200"/>
+  <img alt="Alt text" src="/src/main/resources/breakGame_menuPage_lost.png" title="Optional title" width="200"/>
+  <img alt="Alt text" src="/src/main/resources/breakGame_menuPage_nextLevel.png" title="Optional title" width="200"/>
 </div>
 <br>
 
