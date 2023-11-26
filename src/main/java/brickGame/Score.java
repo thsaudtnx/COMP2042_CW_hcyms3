@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-//import sun.plugin2.message.Message;
 
 public class Score {
     public void showCountDown(Main main, GameEngine engine){
