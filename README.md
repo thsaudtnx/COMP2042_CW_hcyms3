@@ -9,30 +9,26 @@ This coursework is about maintaining and extending a re-implementation of a clas
 game (Brick Breaker) using JavaFX
 <br>
 
-UI Features
-- Home Page
-  - Title Label
-  - Background Music and Image
-  - Buttons like New Game, Load Game, Ranking, Instruction and Quit
-- In-Game Page
-  - Background Music
-  - Top Bar with level, score, heart and time label
-  - Components including the break, ball and block
-  - Items like bonus, heart and additional balls
-  - New Stage with Continue, Reset and Go Home buttons when the game is paused
-- After-Game Page
-  - Go Home Button
-  - User input for ranking
-<br>
+<div>
+  <div>Home Page</div>
+  <div style="margin:10px;display:flex;">
+    <img alt="Alt text" src="/src/main/resources/breakGame_homePage.png" title="Optional title" width="200"/>
+    <img alt="Alt text" src="/src/main/resources/breakGame_homePage_ranking.png" title="Optional title" width="200"/>
+    <img alt="Alt text" src="/src/main/resources/breakGame_homePage_instruction.png" title="Optional title" width="200"/>
+  </div>
 
-<div style="display:flex; margin-right:10px;">
-  <img alt="Alt text" src="/src/main/resources/breakGame_homePage.png" title="Optional title" width="200"/>
-  <img alt="Alt text" src="/src/main/resources/breakGame_homePage_ranking.png" title="Optional title" width="200"/>
-  <img alt="Alt text" src="/src/main/resources/breakGame_homePage_instruction.png" title="Optional title" width="200"/>
-  <img alt="Alt text" src="/src/main/resources/breakGame_gamePage.png" title="Optional title" width="200"/>
-  <img alt="Alt text" src="/src/main/resources/breakGame_gamePage_pause.png" title="Optional title" width="200"/>
-  <img alt="Alt text" src="/src/main/resources/breakGame_menuPage_lost.png" title="Optional title" width="200"/>
-  <img alt="Alt text" src="/src/main/resources/breakGame_menuPage_nextLevel.png" title="Optional title" width="200"/>
+  <div>Game Page</div>
+  <div style="margin:10px;display:flex;">
+    <img alt="Alt text" src="/src/main/resources/breakGame_gamePage.png" title="Optional title" width="200"/>
+    <img alt="Alt text" src="/src/main/resources/breakGame_gamePage_pause.png" title="Optional title" width="200"/>
+  </div>
+
+  <div>Menu Page</div>
+  <div style="margin:10px;display:flex;">
+    <img alt="Alt text" src="/src/main/resources/breakGame_menuPage_lost.png" title="Optional title" width="200"/>
+    <img alt="Alt text" src="/src/main/resources/breakGame_menuPage_nextLevel.png" title="Optional title" width="200"/>
+    <img alt="Alt text" src="/src/main/resources/breakGame_menuPage_win.png" title="Optional title" width="200"/>
+  </div>
 </div>
 <br>
 
