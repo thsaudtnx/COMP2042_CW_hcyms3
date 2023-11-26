@@ -6,24 +6,24 @@ WARNING: If you do not mention it here, do not blame us later if we miss it
 
 ## 🖥️ Project Description
 This coursework is about maintaining and extending a re-implementation of a classic retro
-game (Brick Breaker) using JavaFX
+game (Brick Breaker)
 <br>
 
 <div>
-  <div>Home Page</div>
+  <div style="margin-bottom:10px">1. Home Page</div>
   <div style="margin:10px;display:flex;">
     <img alt="Alt text" src="/src/main/resources/breakGame_homePage.png" title="Optional title" width="200"/>
     <img alt="Alt text" src="/src/main/resources/breakGame_homePage_ranking.png" title="Optional title" width="200"/>
     <img alt="Alt text" src="/src/main/resources/breakGame_homePage_instruction.png" title="Optional title" width="200"/>
   </div>
 
-  <div>Game Page</div>
+  <div style="margin-bottom:10px">2. Game Page</div>
   <div style="margin:10px;display:flex;">
     <img alt="Alt text" src="/src/main/resources/breakGame_gamePage.png" title="Optional title" width="200"/>
     <img alt="Alt text" src="/src/main/resources/breakGame_gamePage_pause.png" title="Optional title" width="200"/>
   </div>
 
-  <div>Menu Page</div>
+  <div style="margin-bottom:10px">3. Menu Page</div>
   <div style="margin:10px;display:flex;">
     <img alt="Alt text" src="/src/main/resources/breakGame_menuPage_lost.png" title="Optional title" width="200"/>
     <img alt="Alt text" src="/src/main/resources/breakGame_menuPage_nextLevel.png" title="Optional title" width="200"/>
@@ -35,13 +35,13 @@ game (Brick Breaker) using JavaFX
 ## 🕰️ Duration
 * 23/10/2023 - 11/12/2023
 
-### ⚙️ Environment
+## ⚙️ Environment
 - `Java 8`
 - `openjdk-21`
 - **IDE** : Intellij
 - **Library** : JavaFx
 
-### 🧑‍🤝‍🧑 Compilation Instructions
+## 🌐 Compilation Instructions
 Provide a clear, step-by-step guide on how to compile the code to produce the application. Include any dependencies or special settings required.
 
 1. Download the zip file or clone the code into your local directory
