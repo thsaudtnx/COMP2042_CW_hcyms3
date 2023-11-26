@@ -24,13 +24,12 @@ UI Features
   - Go Home Button
   - User input for ranking
 <br>
-  
-<img alt="Alt text" src="/src/main/resources/breakGame_homePage.png" title="Optional title" width="200"/>
-<img alt="Alt text" src="/src/main/resources/breakGame_homePage1.png" title="Optional title" width="200"/>
-<img alt="Alt text" src="/src/main/resources/breakGame_gamePage.png" title="Optional title" width="200"/>
-<img alt="Alt text" src="/src/main/resources/breakGame_gamePage1.png" title="Optional title" width="200"/>
-<img alt="Alt text" src="/src/main/resources/breakGame_menuPage.png" title="Optional title" width="200"/>
-<img alt="Alt text" src="/src/main/resources/breakGame_menuPage1.png" title="Optional title" width="200"/>
+
+<div style="display:flex; margin-right:10px;">
+  <img alt="Alt text" src="/src/main/resources/breakGame_homePage.png" title="Optional title" width="200"/>
+  <img alt="Alt text" src="/src/main/resources/breakGame_gamePage.png" title="Optional title" width="200"/>
+  <img alt="Alt text" src="/src/main/resources/breakGame_menuPage.png" title="Optional title" width="200"/>
+</div>
 <br>
 
 ## 🕰️ Duration
