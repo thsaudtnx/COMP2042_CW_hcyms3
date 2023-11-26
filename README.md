@@ -9,12 +9,24 @@ This coursework is about maintaining and extending a re-implementation of a clas
 game (Brick Breaker) using JavaFX
 <br>
 
-<img src="https://github.com/thsaudtnx/COMP2042_CW_hcyms/resources/79046791/aaad2e6a-82dc-4d99-be59-43c5edc6fcdc" width="200" height="400" />
-<img src="https://github.com/thsaudtnx/COMP2042_CW_hcyms/resources/79046791/aaad2e6a-82dc-4d99-be59-43c5edc6fcdc" width="200" height="400" />
-<img src="https://github.com/thsaudtnx/COMP2042_CW_hcyms/resources/79046791/aaad2e6a-82dc-4d99-be59-43c5edc6fcdc" width="200" height="400" />
-<img src="https://github.com/thsaudtnx/COMP2042_CW_hcyms/resources/79046791/aaad2e6a-82dc-4d99-be59-43c5edc6fcdc" width="200" height="400" />
-<img src="https://github.com/thsaudtnx/COMP2042_CW_hcyms/resources/79046791/aaad2e6a-82dc-4d99-be59-43c5edc6fcdc" width="200" height="400" /><img src="https://github.com/thsaudtnx/COMP2042_CW_hcyms/resources/79046791/aaad2e6a-82dc-4d99-be59-43c5edc6fcdc" width="200" height="400" />
-<img src="https://github.com/thsaudtnx/COMP2042_CW_hcyms/resources/79046791/aaad2e6a-82dc-4d99-be59-43c5edc6fcdc" width="200" height="400" />
+UI Features
+- Home Page
+  - Title Label
+  - Background Music and Wall Paper
+  - Buttons like New Game, Load Game, Ranking, Instruction and Quit
+- In-Game Page
+  - Background Music
+  - Top Bar with level, score, heart and time label
+  - Components including the break, ball and block
+  - Items like bonus, heart and additional balls
+  - New Stage with Continue, Reset and Go Home buttons when the game is paused
+- After-Game Page
+  - Go Home Button
+  - User input for ranking
+
+<img alt="Alt text" height="400" src="/src/main/resources/breakGame_gamePage.png" title="Optional title" width="200"/>
+
+
 <br>
 
 ## 🕰️ Duration
@@ -27,7 +39,7 @@ game (Brick Breaker) using JavaFX
 - **Library** : JavaFx
 
 ### 🧑‍🤝‍🧑 Compilation Instructions
-#### Provide a clear, step-by-step guide on how to compile the code to produce the application. Include any dependencies or special settings required.
+Provide a clear, step-by-step guide on how to compile the code to produce the application. Include any dependencies or special settings required.
 
 1. Download the zip file or clone the code into your local directory
 ``` bash
@@ -39,7 +51,7 @@ $ git clone https://github.com/thsaudtnx/COMP2042_CW_hcyms3.git
 
 ## 📌 Implementations
 ### 1. Implemented and Working Properly
-#### List the features that have been successfully implemented and are functioning as expected. Provide a brief description of each. 
+List the features that have been successfully implemented and are functioning as expected. Provide a brief description of each. 
 - Background music
   - Different background music for home page and game page
   - Can stop and start the background music
@@ -103,35 +115,20 @@ $ git clone https://github.com/thsaudtnx/COMP2042_CW_hcyms3.git
   - Displays the points when the ball hits the block or the ground
   - Displays the message when the break hits the heart item
 
-#### UI Features
-- Home Page
-  - Title Label
-  - Background Music and Wall Paper
-  - Buttons like New Game, Load Game, Ranking, Instruction and Quit
-- In-Game Page
-  - Background Music
-  - Top Bar with level, score, heart and time label
-  - Components including the break, ball and block
-  - Items like bonus, heart and additional balls
-  - New Stage with Continue, Reset and Go Home buttons when the game is paused
-- After-Game Page
-  - Go Home Button
-  - User input for ranking 
-
 ### 2. Implemented but Not Working Properly
-#### List any features that have been implemented but are not working correctly. Explain the issues you encountered, and if possible, the steps you took to address them.
+List any features that have been implemented but are not working correctly. Explain the issues you encountered, and if possible, the steps you took to address them.
 
 
 ### 3. Features Not Implemented
-#### Identify any features that you were unable to implement and provide a clear explanation for why they were left out.
+Identify any features that you were unable to implement and provide a clear explanation for why they were left out.
 
 ### 4. New Java Classes
-#### Enumerate any new Java classes that you introduced for the assignment. Include a brief description of each class's purpose and its location in the code.
+Enumerate any new Java classes that you introduced for the assignment. Include a brief description of each class's purpose and its location in the code.
 
 
 ### 5. Modified Java Classes
-#### List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.
+List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.
 
 
 ### 6. Unexpected Problems
-#### Communicate any unexpected challenges or issues you encountered during the assignment. Describe how you addressed or attempted to resolve them.
+Communicate any unexpected challenges or issues you encountered during the assignment. Describe how you addressed or attempted to resolve them.
