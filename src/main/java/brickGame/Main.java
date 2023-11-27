@@ -459,7 +459,7 @@ public class Main extends Application implements GameEngine.OnAction {
         engine.setFps(120);
 
         //Count down 3 seconds and engine.start()
-        new Score().showCountDown(this, engine);
+        new Show().showCountDown(this, engine);
     }
     public void menuPage(){
         //Clear the last level or GameOver
@@ -685,7 +685,7 @@ public class Main extends Application implements GameEngine.OnAction {
             if (ball.collideToBlock){
                 Block.BlockEntry block = ball.collideBlock;
                 score += block.point;
-                new Score().showScore(block.x, block.y, block.point, this);
+                new Show().showScore(block.x, block.y, block.point, this);
                 if (block.type == Block.BLOCK_NORMAL){}
                 if (block.type == Block.BLOCK_CHOCO) {
                     Bonus.BonusEntry newBonus = new Bonus.BonusEntry(block.row, block.column, time);
@@ -713,7 +713,7 @@ public class Main extends Application implements GameEngine.OnAction {
             if (ball.isMinusHeart()) {
                 //TODO gameover
                 heart--;
-                new Score().showScore(sceneWidth / 2, sceneHeight / 2, -1, this);
+                new Show().showScore(sceneWidth / 2, sceneHeight / 2, -1, this);
 
                 if (heart == 0) {
                     try {
@@ -750,7 +750,7 @@ public class Main extends Application implements GameEngine.OnAction {
                 System.out.println("You Got it and +3 score for you");
                 choco.taken = true;
                 choco.rect.setVisible(false);
-                new Score().showScore(choco.x, choco.y, 3, this);
+                new Show().showScore(choco.x, choco.y, 3, this);
                 continue;
             }
             choco.y += ((time - choco.timeCreated) / 1000.000) + 1.000;
@@ -768,7 +768,7 @@ public class Main extends Application implements GameEngine.OnAction {
             if (breakClass.yBreak <= heartItem.y + Heart.height && heartItem.x >= breakClass.xBreak && heartItem.x <= breakClass.xBreak + breakClass.breakWidth) {
                 heartItem.taken = true;
                 heartItem.rect.setVisible(false);
-                new Score().showMessage("+ Heart", this);
+                new Show().showMessage("+ Heart", this);
                 heart++;
                 continue;
             }
