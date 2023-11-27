@@ -48,57 +48,58 @@ Provide a clear, step-by-step guide on how to compile the code to produce the ap
 ``` bash
 $ git clone https://github.com/thsaudtnx/COMP2042_CW_hcyms3.git
 ```
-2. Open the folder in the IDE (Intellij Recommended)
-3. Set the jdk for the java project (I have used openjdk-21)
-4. Run the Main Class 
+2. Open the folder in the IntelliJ IDE
+3. In the IntelliJ > File > Project Structure > Libraries
+4. Add a library > Java > javafx-sdk-21.0.1 > lib, then apply
+5. Run the Main Class 
 
 ## 📌 Implementations
 ### 1. Implemented and Working Properly
 List the features that have been successfully implemented and are functioning as expected. Provide a brief description of each. 
 > - Background music
->  - Different background music for home and game page
->  - Can stop and start the background music when the user pause or continue the game
+>   - Different background music for home and game page
+>   - Can stop and start the background music when the user pause or continue the game
 > - Ball
->  - Sound effect when the ball hit an object
->  - Add a new ball when the ball hits the ball block
->  - Set and checks gold time of the ball
->  - Controls the movement of the ball, checks the hit to the break/block/wall
+>   - Sound effect when the ball hit an object
+>   - Add a new ball when the ball hits the ball block
+>   - Set and checks gold time of the ball
+>   - Controls the movement of the ball, checks the hit to the break/block/wall
 > - Block
->  - Initializing the blocks in every level without the blank
->  - Counts destroyed blocks to check if the level is completed
->  - Have different types (normal, choco, star, heart and ball block)
->  - Fill normal block with random color
+>   - Initializing the blocks in every level without the blank
+>   - Counts destroyed blocks to check if the level is completed
+>   - Have different types (normal, choco, star, heart and ball block)
+>   - Fill normal block with random color
 > - Bonus / Heart
->  - Bonus falls when the ball hits the choco block
->  - heart falls when the ball hits the heart block
->  - Add 3 points when the break hits the bonus
->  - Add a life when the break hits the heart
->  - Both can have multiples
+>   - Bonus falls when the ball hits the choco block
+>   - heart falls when the ball hits the heart block
+>   - Add 3 points when the break hits the bonus
+>   - Add a life when the break hits the heart
+>   - Both can have multiples
 > - Break
->  - Move method to move the break left or right
->  - It cannot move if it hits the wall
+>   - Move method to move the break left or right
+>   - It cannot move if it hits the wall
 > - Load/Save
->  - Game is saved when the user press the keyboard 's' during the game
->  - Game is loaded when the user clicks the load game button in the home page
->  - Game setting is saved in Desktop/breakGameData directory, savedData.obj file
->  - It updates the saved data when new version is saved
+>   - Game is saved when the user press the keyboard 's' during the game
+>   - Game is loaded when the user clicks the load game button in the home page
+>   - Game setting is saved in Desktop/breakGameData directory, savedData.obj file
+>   - It updates the saved data when new version is saved
 > - Ranking
->  - the information is saved in the ranking list when the user enters in information after the game
->  - The user can check rankings by clicking ranking button on home page
->  - It is saved with Username, Score, Time, DateTime
->  - Ranking is saved in Desktop/breakGameData directory, ranking.obj file
->  - It is sorted first with score and second time
+>   - the information is saved in the ranking list when the user enters in information after the game
+>   - The user can check rankings by clicking ranking button on home page
+>   - It is saved with Username, Score, Time, DateTime
+>   - Ranking is saved in Desktop/breakGameData directory, ranking.obj file
+>   - It is sorted first with score and second time
 > - Score
->  - Displays the countdown before starting the game
->  - Displays the points when the ball hits the block or the ground
->  - Displays the message when the break hits the heart item
+>   - Displays the countdown before starting the game
+>   - Displays the points when the ball hits the block or the ground
+>   - Displays the message when the break hits the heart item
 > - Pause / Reset / Go Home
->  - The game is paused when the user press the space bar
->  - When the game is paused, the modal appears with 3 buttons(continue, reset and go home)
+>   - The game is paused when the user press the space bar
+>   - When the game is paused, the modal appears with 3 buttons(continue, reset and go home)
 > - Instruction modal
->  - The user can see the instruction when they press the instruction button on home
+>   - The user can see the instruction when they press the instruction button on home
 > - Level / Score / Heart / Time
->  - These 4 variables appear on the top in the game
+>   - These 4 variables appear on the top in the game
 
 
 ### 2. Implemented but Not Working Properly
@@ -123,50 +124,50 @@ Therefore, due to the lack of such capabilities, it was left out.
 ### 4. New Java Classes
 Enumerate any new Java classes that you introduced for the assignment. Include a brief description of each class's purpose and its location in the code.
 > - BackgroundMusic
->  - Different background music for home page and game page
->  - Can stop and start the background music
->  - Located in Background Music Class
->  - Used Javafx Media library
+>   - Different background music for home page and game page
+>   - Can stop and start the background music
+>   - Located in Background Music Class
+>   - Used Javafx Media library
 <br><br>
 > - Ball
->  - Located in Ball Class
->  - Used Javafx Media library for ball hit sound
->  - Have ballEntry type array for multiple balls
->  - Set and checks gold time of the ball
->  - Have ballEntry inner class for set physics to each ball
->  - BallEntry class implements serializable for file system
->  - setPhysics method controls the movement of the ball, checks the hit to the break/block/wall
+>   - Located in Ball Class
+>   - Used Javafx Media library for ball hit sound
+>   - Have ballEntry type array for multiple balls
+>   - Set and checks gold time of the ball
+>   - Have ballEntry inner class for set physics to each ball
+>   - BallEntry class implements serializable for file system
+>   - setPhysics method controls the movement of the ball, checks the hit to the break/block/wall
 <br><br>
 > - Break
->  - Located in Break Class
->  - Used keycode library to checks the keyCode that user press
->  - Move method to move the break left or right / cannot move if hits the wall
+>   - Located in Break Class
+>   - Used keycode library to checks the keyCode that user press
+>   - Move method to move the break left or right / cannot move if hits the wall
 <br><br>
 > - Colour
->  - Located in Colour Class
->  - Stores the variable for different colors
+>   - Located in Colour Class
+>   - Stores the variable for different colors
 <br><br>
 > - Heart
->  - Located in Heart Class
->  - Modified that life is added if the ball hits the heart block and the break hits the falling heart item instead of just hitting the heart block
->  - Have heartEntry type array for storing multiple hearts
->  - HeartEntry inner class is implementing serializable for the file system
+>   - Located in Heart Class
+>   - Modified that life is added if the ball hits the heart block and the break hits the falling heart item instead of just hitting the heart block
+>   - Have heartEntry type array for storing multiple hearts
+>   - HeartEntry inner class is implementing serializable for the file system
 <br><br>
 > - Ranking
->  - Located in Ranking Class
->  - Every end of the level, the information is saved in the ranking list
->  - The user can check rankings by clicking ranking button on home page
->  - It is saved with Username, Score, Time, DateTime
->  - Ranking is saved in Desktop/breakGameData directory, ranking.obj file
->  - It is sorted first with score and then time
+>   - Located in Ranking Class
+>   - Every end of the level, the information is saved in the ranking list
+>   - The user can check rankings by clicking ranking button on home page
+>   - It is saved with Username, Score, Time, DateTime
+>   - Ranking is saved in Desktop/breakGameData directory, ranking.obj file
+>   - It is sorted first with score and then time
 
 ### 5. Modified Java Classes
 List the Java classes you modified from the provided code base. Describe the changes you made and explain why these modifications were necessary.
 > - Game Engine
->  - Located in GameEngine Class
->  - Deleted Initialize method because it is more efficient that the game variables are only initialized in the Main
->  - Deleted PhysicsCalculation method since the whole game could be controlled by single thread. Otherwise, it is vulnerable to control the race conditions of the thread. Also for the better efficiency of the game
->  - Created stop/go method for time variable. This is for the pause function for the middle of the game
+>   - Located in GameEngine Class
+>   - Deleted Initialize method because it is more efficient that the game variables are only initialized in the Main
+>   - Deleted PhysicsCalculation method since the whole game could be controlled by single thread. Otherwise, it is vulnerable to control the race conditions of the thread. Also for the better efficiency of the game
+>   - Created stop/go method for time variable. This is for the pause function for the middle of the game
 
 ### 6. Unexpected Problems
 Communicate any unexpected challenges or issues you encountered during the assignment. Describe how you addressed or attempted to resolve them.
