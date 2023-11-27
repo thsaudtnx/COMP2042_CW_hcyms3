@@ -48,10 +48,17 @@ Provide a clear, step-by-step guide on how to compile the code to produce the ap
 ``` bash
 $ git clone https://github.com/thsaudtnx/COMP2042_CW_hcyms3.git
 ```
+(Below is for Github contribution)
+```bash
+$ git init
+$ git add .
+$ git commit -m "commit message"
+$ git push origin main
+```
 2. Open the folder in the IntelliJ IDE
 3. In the IntelliJ > File > Project Structure > Libraries
 4. Add a library > Java > javafx-sdk-21.0.1 > lib, then apply
-5. Run the Main Class 
+5. Run the Main Class
 
 ## 📌 Implementations
 ### 1. Implemented and Working Properly

@@ -1,16 +1,18 @@
 package brickGame;
 
+import brickGame.GameEngine;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 
 public class Show {
-    public void showCountDown(Main main, GameEngine engine){
+    public void showCountDown(Pane pane, GameEngine engine){
         Label label = new Label();
         label.setTranslateX(250);
         label.setTranslateY(300);
         label.setVisible(true);
         Platform.runLater(() -> {
-            main.root.getChildren().add(label);
+            pane.getChildren().add(label);
         });
 
         new Thread(new Runnable() {
@@ -43,7 +45,7 @@ public class Show {
             }
         }).start();
     }
-    public void showScore(final double x, final double y, int score, Main main) {
+    public void showScore(final double x, final double y, int score, Pane pane) {
         String sign;
         if (score >= 0) {
             sign = "+";
@@ -55,7 +57,7 @@ public class Show {
         label.setTranslateY(y);
         label.setVisible(true);
         Platform.runLater(() -> {
-            main.root.getChildren().add(label);
+            pane.getChildren().add(label);
         });
 
         new Thread(new Runnable() {
@@ -78,13 +80,13 @@ public class Show {
             }
         }).start();
     }
-    public void showMessage(String message, final Main main) {
+    public void showMessage(String message, final Pane pane) {
         final Label label = new Label(message);
         label.setTranslateX(220);
         label.setTranslateY(340);
 
         Platform.runLater(() -> {
-            main.root.getChildren().add(label);
+            pane.getChildren().add(label);
         });
 
         new Thread(new Runnable() {

@@ -11,4 +11,5 @@ module brickGame {
     opens brickGame.components to javafx.fxml;
     exports brickGame.effects;
     opens brickGame.effects to javafx.fxml;
+
 }
