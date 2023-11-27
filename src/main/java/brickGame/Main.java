@@ -1,5 +1,7 @@
 package brickGame;
 
+import brickGame.components.*;
+import brickGame.effects.BackgroundMusic;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -22,7 +24,6 @@ public class Main extends Application implements GameEngine.OnAction {
     final private int sceneWidth = 500;
     final private int sceneHeight = 700;
     private GameEngine engine;
-    private Ranking ranking;
 
     private Ball ballClass;
     private Break breakClass;
@@ -37,6 +38,8 @@ public class Main extends Application implements GameEngine.OnAction {
     private int  score = 0;
     private long time = 0;
 
+    Stage primaryStage;
+    BackgroundMusic backgroundMusic;
     public Pane root;
     private Scene scene;
     private Label titleLabel;
@@ -45,209 +48,500 @@ public class Main extends Application implements GameEngine.OnAction {
     private Label levelLabel;
     private Label timeLabel;
 
-    Stage primaryStage;
-    Button loadGameButton;
-    Button newGameButton;
-    Button nextGameButton;
-    Button quitButton;
-    Button instructionButton;
-    Button homeButton;
-    Button rankingButton;
-    BackgroundMusic backgroundMusic;
+    public void homePage(){
+        //Set Label
+        Label titleLabel = new Label();
+        Image titleImage = new Image("brickGameTitle.png");
+        ImageView titleImageView = new ImageView(titleImage);
+        titleImageView.setFitWidth(titleImage.getWidth() * 0.5);
+        titleImageView.setFitHeight(titleImage.getHeight() * 0.5);
+        titleLabel.setGraphic(titleImageView);
+        titleLabel.setTranslateX(120);
+        titleLabel.setTranslateY(120);
+        titleLabel.setVisible(true);
 
-    public static void main(String[] args) {
-        launch(args);
+        //Set Buttons
+        Button newGameButton = new Button();
+        Button loadGameButton = new Button();
+        Button rankingButton = new Button();
+        Button quitButton = new Button();
+        Button instructionButton = new Button();
+        Image newGameImage = new Image("newGameButton.png");
+        Image loadGameImage = new Image("loadGameButton.png");
+        Image rankingImage = new Image("rankingButton.png");
+        Image quitImage = new Image("quitButton.png");
+        Image instructionImage = new Image("instructionButton.png");
+        ImageView newGameImageView = new ImageView(newGameImage);
+        ImageView loadGameImageView = new ImageView(loadGameImage);
+        ImageView rankingImageView = new ImageView(rankingImage);
+        ImageView quitImageView = new ImageView(quitImage);
+        ImageView instructionImageView = new ImageView(instructionImage);
+        newGameImageView.setFitWidth(newGameImage.getWidth() * 0.3);
+        newGameImageView.setFitHeight(newGameImage.getHeight() * 0.3);
+        loadGameImageView.setFitWidth(loadGameImage.getWidth() * 0.3);
+        loadGameImageView.setFitHeight(loadGameImage.getHeight() * 0.3);
+        rankingImageView.setFitWidth(rankingImage.getWidth() * 0.3);
+        rankingImageView.setFitHeight(rankingImage.getHeight() * 0.3);
+        quitImageView.setFitWidth(quitImage.getWidth() * 0.3);
+        quitImageView.setFitHeight(quitImage.getHeight() * 0.3);
+        instructionImageView.setFitWidth(instructionImage.getWidth() * 0.3);
+        instructionImageView.setFitHeight(instructionImage.getHeight() * 0.3);
+        newGameButton.setGraphic(newGameImageView);
+        loadGameButton.setGraphic(loadGameImageView);
+        rankingButton.setGraphic(rankingImageView);
+        instructionButton.setGraphic(instructionImageView);
+        quitButton.setGraphic(quitImageView);
+        newGameButton.setTranslateX(170);
+        newGameButton.setTranslateY(300);
+        loadGameButton.setTranslateX(170);
+        loadGameButton.setTranslateY(360);
+        rankingButton.setTranslateX(170);
+        rankingButton.setTranslateY(420);
+        instructionButton.setTranslateX(170);
+        instructionButton.setTranslateY(480);
+        quitButton.setTranslateX(185);
+        quitButton.setTranslateY(540);
+
+        rankingButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Ranking ranking = new Ranking();
+                System.out.println(ranking.getFormattedRanking());
+                //Set popup stage
+                Stage popupStage = new Stage();
+                popupStage.initModality(Modality.APPLICATION_MODAL);
+                popupStage.setResizable(false);
+                popupStage.setTitle("Ranking");
+                popupStage.setX(600);  // Set X coordinate
+                popupStage.setY(200);  // Set Y coordinate
+
+                Platform.runLater(() -> {
+                    // Design the content of the popup (a simple example with a label)
+                    VBox popupLayout = new VBox();
+                    popupLayout.setSpacing(10);
+                    Label headLabel = new Label("Ranking\tUsername\tScore\tRecord\tDateTime");
+                    Label rankingLabel = new Label(ranking.getFormattedRanking());
+                    popupLayout.getChildren().addAll(headLabel, rankingLabel);
+
+                    //Set a popup scene
+                    Scene popupScene = new Scene(popupLayout, 300, 200);
+                    popupStage.setScene(popupScene);
+
+                    // Show the popup
+                    popupStage.show();
+                });
+            }
+        });
+        loadGameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (LoadSave.isExistSavedFile()){
+                    try {
+                        backgroundMusic.stop();
+                        page = 1;
+                        isLoad = true;
+                        start(primaryStage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    //There is no saved file
+                }
+            }
+        });
+        newGameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    backgroundMusic.stop();
+                    page = 1;
+                    level=1;
+                    start(primaryStage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        instructionButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println("instruction");
+                //Set the pop up stage
+                Stage popupStage = new Stage();
+                popupStage.initModality(Modality.APPLICATION_MODAL);
+                popupStage.setResizable(false);
+                popupStage.setTitle("Instruction");
+                popupStage.setX(630);  // Set X coordinate
+                popupStage.setY(300);  // Set Y coordinate
+
+                Platform.runLater(() -> {
+                    // Design the content of the popup (a simple example with a label)
+                    Pane popupLayout = new Pane();
+                    BackgroundImage background = new BackgroundImage(
+                            new Image("instructionPage.png"),
+                            BackgroundRepeat.NO_REPEAT,
+                            BackgroundRepeat.NO_REPEAT,
+                            BackgroundPosition.CENTER,
+                            new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
+                    );
+                    popupLayout.setBackground(new Background(background));
+
+                    //Set a popup scene
+                    Scene popupScene = new Scene(popupLayout, 300, 200);
+                    popupStage.setScene(popupScene);
+
+                    // Show the popup
+                    popupStage.show();
+                });
+
+            }
+        });
+        quitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                primaryStage.close();
+            }
+        });
+
+        //Set the root pane
+        root = new Pane();
+        BackgroundImage background = new BackgroundImage(
+                new Image("spaceBg.jpg"),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
+        );
+        root.setBackground(new Background(background));
+
+        //Set background music
+        backgroundMusic = new BackgroundMusic(page);
+        backgroundMusic.start();
+
+        //Draw UI Components
+        Platform.runLater(() -> {
+            //Add components into root
+            root.getChildren().addAll(
+                    titleLabel,
+                    newGameButton,
+                    loadGameButton,
+                    rankingButton,
+                    instructionButton,
+                    quitButton
+            );
+            //Set the main scene
+            scene = new Scene(root, sceneWidth, sceneHeight);
+            //scene.getStylesheets().add("style.css");
+
+            //Set the primary stage
+            primaryStage.setTitle("Brick Game");
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        });
+
+        //Set the game engine
+        engine = new GameEngine();
+        engine.setOnAction(this);
+        engine.setFps(120);
     }
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        //Home Page
-        if (page==0){
-            this.primaryStage = primaryStage;
+    public void gamePage(){
+        if (isLoad){
+            isLoad = false;
+            LoadSave.loadGame();
+            level = LoadSave.data.level;
+            score = LoadSave.data.score;
+            time = LoadSave.data.time;
+            heart = LoadSave.data.heart;
+            blockClass = LoadSave.data.blockClass;
+            heartClass = LoadSave.data.heartClass;
+            bonusClass = LoadSave.data.bonusClass;
+            ballClass = LoadSave.data.ballClass;
+            breakClass = LoadSave.data.breakClass;
+        }
+        else {
+            if (level==1){
+                heart = 3;
+                score = 0;
+                time = 0;
+            }
+            else {
+                //initialize except score and heart and time
+                time = 0;
+            }
+            //Initialize
+            onInit();
+        }
 
+        //Set Labels
+        scoreLabel = new Label("Score: " + score);
+        levelLabel = new Label("Level " + level);
+        heartLabel = new Label("Heart : " + heart);
+        timeLabel = new Label("Time : " + time);
+        levelLabel.setTranslateX(5);
+        scoreLabel.setTranslateX(sceneWidth / 4);
+        timeLabel.setTranslateX(sceneWidth / 2);
+        heartLabel.setTranslateX(sceneWidth*3 / 4);
+
+        //Set the root pane
+        root = new Pane();
+        BackgroundImage background = new BackgroundImage(
+                new Image("bg.jpg"),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
+        );
+        root.setBackground(new Background(background));
+
+        //Set background music
+        BackgroundMusic backgroundMusic = new BackgroundMusic(page);
+        backgroundMusic.start();
+
+        Platform.runLater(() -> {
+            root.getChildren().addAll(
+                    scoreLabel,
+                    heartLabel,
+                    levelLabel,
+                    timeLabel,
+                    breakClass.rect
+            );
+            for (Ball.BallEntry ball : ballClass.balls){
+                root.getChildren().add(ball.circle);
+            }
+            for (Block.BlockEntry block : blockClass.blocks) {
+                root.getChildren().add(block.rect);
+            }
+            for (Bonus.BonusEntry bonus : bonusClass.bonuses){
+                root.getChildren().add(bonus.rect);
+            }
+            for (Heart.HeartEntry heart : heartClass.hearts){
+                root.getChildren().add(heart.rect);
+            }
+
+            //Set the main scene
+            scene = new Scene(root, sceneWidth, sceneHeight);
+            scene.getStylesheets().add("style.css");
+            scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+                @Override
+                public void handle(KeyEvent keyEvent) {
+                    switch (keyEvent.getCode()) {
+                        case LEFT:
+                            breakClass.move(KeyCode.LEFT);
+                            break;
+                        case RIGHT:
+                            breakClass.move(KeyCode.RIGHT);
+                            break;
+                        case S:
+                            LoadSave.saveGame(
+                                    level,
+                                    score,
+                                    time,
+                                    heart,
+                                    blockClass,
+                                    heartClass,
+                                    bonusClass,
+                                    ballClass,
+                                    breakClass
+                            );
+                            break;
+                        case SPACE:
+                            engine.stop();
+
+                            //Set the pop up stage
+                            Stage popupStage = new Stage();
+                            popupStage.initModality(Modality.APPLICATION_MODAL);
+                            popupStage.setResizable(false);
+                            popupStage.initStyle(StageStyle.UNDECORATED);
+                            popupStage.setX(630);  // Set X coordinate
+                            popupStage.setY(300);  // Set Y coordinate
+
+                            //Set a buttons
+                            Button continueButton = new Button();
+                            Button resetButton = new Button();
+                            Button homeButton = new Button();
+                            Image continueImage = new Image("continueButton.png");
+                            Image resetImage = new Image("resetButton.png");
+                            Image homeImage = new Image("homeButton.png");
+                            ImageView continueImageView = new ImageView(continueImage);
+                            ImageView resetImageView = new ImageView(resetImage);
+                            ImageView homeImageView = new ImageView(homeImage);
+                            continueImageView.setFitWidth(continueImage.getWidth() * 0.3);
+                            continueImageView.setFitHeight(continueImage.getHeight() * 0.3);
+                            resetImageView.setFitWidth(resetImage.getWidth() * 0.3);
+                            resetImageView.setFitHeight(resetImage.getHeight() * 0.3);
+                            homeImageView.setFitWidth(homeImage.getWidth() * 0.3);
+                            homeImageView.setFitHeight(homeImage.getHeight() * 0.3);
+                            continueButton.setGraphic(continueImageView);
+                            resetButton.setGraphic(resetImageView);
+                            homeButton.setGraphic(homeImageView);
+                            continueButton.setTranslateX(60);
+                            continueButton.setTranslateY(30);
+                            resetButton.setTranslateX(60);
+                            resetButton.setTranslateY(30);
+                            homeButton.setTranslateX(60);
+                            homeButton.setTranslateY(30);
+                            continueButton.setVisible(true);
+                            resetButton.setVisible(true);
+                            homeButton.setVisible(true);
+
+                            //Set the event on each buttons
+                            continueButton.setOnAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent actionEvent) {
+                                    System.out.println("continue");
+                                    engine.go();
+                                    popupStage.close();
+                                }
+                            });
+                            resetButton.setOnAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent actionEvent) {
+                                    System.out.println("reset");
+                                    popupStage.close();
+                                    try {
+                                        page = 1;
+                                        start(primaryStage);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                            homeButton.setOnAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent actionEvent) {
+                                    System.out.println("home");
+                                    popupStage.close();
+                                    backgroundMusic.stop();
+
+                                    try {
+                                        page = 0;
+                                        start(primaryStage);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            });
+                            Platform.runLater(() -> {
+                                // Design the content of the popup (a simple example with a label)
+                                VBox popupLayout = new VBox();
+                                popupLayout.setSpacing(10);
+                                popupLayout.getChildren().addAll(continueButton, resetButton, homeButton);
+                                popupLayout.setStyle(
+                                        "-fx-background-color: black; " +
+                                                "-fx-border-color: white; " +
+                                                "-fx-border-width: 2px; "
+                                );
+
+                                //Set a popup scene
+                                Scene popupScene = new Scene(popupLayout, 300, 200);
+                                popupStage.setScene(popupScene);
+
+                                // Show the popup
+                                popupStage.show();
+                            });
+                            break;
+                    }
+                }
+            });
+
+            //Set the primary stage
+            primaryStage.setTitle("Brick Game");
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        });
+
+        //Set the game engine
+        engine = new GameEngine();
+        engine.setOnAction(this);
+        engine.setFps(120);
+
+        //Count down 3 seconds and engine.start()
+        new Score().showCountDown(this, engine);
+    }
+    public void menuPage(){
+        //Clear the last level or GameOver
+        if (level==11 || heart==0){
             //Set Label
             titleLabel = new Label();
-            Image titleImage = new Image("brickGameTitle.png");
+            scoreLabel = new Label("Score : " + score);
+            timeLabel = new Label("Time : " + time);
+            scoreLabel.setTextFill(Color.WHITE);
+            timeLabel.setTextFill(Color.WHITE);
+            scoreLabel.setStyle("-fx-font-size: 24px;");
+            timeLabel.setStyle("-fx-font-size: 24px;");
+            Image titleImage = heart==0 ? new Image("gameOver.png") : new Image("completeTitle.png");
             ImageView titleImageView = new ImageView(titleImage);
             titleImageView.setFitWidth(titleImage.getWidth() * 0.5);
             titleImageView.setFitHeight(titleImage.getHeight() * 0.5);
             titleLabel.setGraphic(titleImageView);
             titleLabel.setTranslateX(120);
             titleLabel.setTranslateY(120);
+            scoreLabel.setTranslateX(200);
+            scoreLabel.setTranslateY(300);
+            timeLabel.setTranslateX(200);
+            timeLabel.setTranslateY(350);
             titleLabel.setVisible(true);
+            scoreLabel.setVisible(true);
+            timeLabel.setVisible(true);
 
-            //Set Buttons
-            newGameButton = new Button();
-            loadGameButton = new Button();
-            rankingButton = new Button();
-            quitButton = new Button();
-            instructionButton = new Button();
-            Image newGameImage = new Image("newGameButton.png");
-            Image loadGameImage = new Image("loadGameButton.png");
-            Image rankingImage = new Image("rankingButton.png");
-            Image quitImage = new Image("quitButton.png");
-            Image instructionImage = new Image("instructionButton.png");
-            ImageView newGameImageView = new ImageView(newGameImage);
-            ImageView loadGameImageView = new ImageView(loadGameImage);
-            ImageView rankingImageView = new ImageView(rankingImage);
-            ImageView quitImageView = new ImageView(quitImage);
-            ImageView instructionImageView = new ImageView(instructionImage);
-            newGameImageView.setFitWidth(newGameImage.getWidth() * 0.3);
-            newGameImageView.setFitHeight(newGameImage.getHeight() * 0.3);
-            loadGameImageView.setFitWidth(loadGameImage.getWidth() * 0.3);
-            loadGameImageView.setFitHeight(loadGameImage.getHeight() * 0.3);
-            rankingImageView.setFitWidth(rankingImage.getWidth() * 0.3);
-            rankingImageView.setFitHeight(rankingImage.getHeight() * 0.3);
-            quitImageView.setFitWidth(quitImage.getWidth() * 0.3);
-            quitImageView.setFitHeight(quitImage.getHeight() * 0.3);
-            instructionImageView.setFitWidth(instructionImage.getWidth() * 0.3);
-            instructionImageView.setFitHeight(instructionImage.getHeight() * 0.3);
-            newGameButton.setGraphic(newGameImageView);
-            loadGameButton.setGraphic(loadGameImageView);
-            rankingButton.setGraphic(rankingImageView);
-            instructionButton.setGraphic(instructionImageView);
-            quitButton.setGraphic(quitImageView);
-            newGameButton.setTranslateX(170);
-            newGameButton.setTranslateY(300);
-            loadGameButton.setTranslateX(170);
-            loadGameButton.setTranslateY(360);
-            rankingButton.setTranslateX(170);
-            rankingButton.setTranslateY(420);
-            instructionButton.setTranslateX(170);
-            instructionButton.setTranslateY(480);
-            quitButton.setTranslateX(185);
-            quitButton.setTranslateY(540);
-            loadGameButton.setVisible(true);
-            newGameButton.setVisible(true);
-            rankingButton.setVisible(true);
-            quitButton.setVisible(true);
-            instructionButton.setVisible(true);
-            rankingButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    ranking = new Ranking();
-                    System.out.println(ranking.getFormattedRanking());
-                    //Set popup stage
-                    Stage popupStage = new Stage();
-                    popupStage.initModality(Modality.APPLICATION_MODAL);
-                    popupStage.setResizable(false);
-                    popupStage.setTitle("Ranking");
-                    popupStage.setX(600);  // Set X coordinate
-                    popupStage.setY(200);  // Set Y coordinate
+            // Create a TextField for username input
+            TextField usernameField = new TextField();
+            usernameField.setPromptText("Enter your username"); // Set a prompt text
 
-                    Platform.runLater(() -> {
-                        // Design the content of the popup (a simple example with a label)
-                        VBox popupLayout = new VBox();
-                        popupLayout.setSpacing(10);
-                        Label headLabel = new Label("Ranking\tUsername\tScore\tRecord\tDateTime");
-                        Label rankingLabel = new Label(ranking.getFormattedRanking());
-                        popupLayout.getChildren().addAll(headLabel, rankingLabel);
+            // Create a Button to submit the username
+            Button submitButton = new Button("Submit");
+            submitButton.setOnAction(event -> {
+                String username = usernameField.getText();
+                System.out.println("Entered Username: " + username);
+                // You can handle the entered username as needed
 
-                        //Set a popup scene
-                        Scene popupScene = new Scene(popupLayout, 300, 200);
-                        popupStage.setScene(popupScene);
-
-                        // Show the popup
-                        popupStage.show();
-                    });
-                }
+                Ranking ranking = new Ranking();
+                ranking.addEntry(username, score, time);
             });
-            loadGameButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    if (LoadSave.isExistSavedFile()){
-                        try {
-                            backgroundMusic.stop();
-                            page = 1;
-                            isLoad = true;
-                            start(primaryStage);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        //There is no saved file
-                    }
-                }
-            });
-            newGameButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            HBox inputLayout = new HBox(usernameField, submitButton);
+            inputLayout.setSpacing(10);
+            inputLayout.setTranslateX(170);
+            inputLayout.setTranslateY(400);
+
+            //set buttons
+            Button homeButton = new Button();
+            Image homeImage = new Image("homeButton.png");
+            ImageView homeImageView = new ImageView(homeImage);
+            homeImageView.setFitWidth(homeImage.getWidth() * 0.3);
+            homeImageView.setFitHeight(homeImage.getHeight() * 0.3);
+            homeButton.setGraphic(homeImageView);
+            homeButton.setTranslateX(170);
+            homeButton.setTranslateY(450);
+            homeButton.setVisible(true);
+            homeButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     try {
-                        backgroundMusic.stop();
-                        page = 1;
-                        level=1;
+                        page = 0;
+                        level = 1;
                         start(primaryStage);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
-            instructionButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    System.out.println("instruction");
-                    //Set the pop up stage
-                    Stage popupStage = new Stage();
-                    popupStage.initModality(Modality.APPLICATION_MODAL);
-                    popupStage.setResizable(false);
-                    popupStage.setTitle("Instruction");
-                    popupStage.setX(630);  // Set X coordinate
-                    popupStage.setY(300);  // Set Y coordinate
-
-                    Platform.runLater(() -> {
-                        // Design the content of the popup (a simple example with a label)
-                        Pane popupLayout = new Pane();
-                        BackgroundImage background = new BackgroundImage(
-                                new Image("instructionPage.png"),
-                                BackgroundRepeat.NO_REPEAT,
-                                BackgroundRepeat.NO_REPEAT,
-                                BackgroundPosition.CENTER,
-                                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
-                        );
-                        popupLayout.setBackground(new Background(background));
-
-                        //Set a popup scene
-                        Scene popupScene = new Scene(popupLayout, 300, 200);
-                        popupStage.setScene(popupScene);
-
-                        // Show the popup
-                        popupStage.show();
-                    });
-
-                }
-            });
-            quitButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    primaryStage.close();
-                }
-            });
 
             //Set the root pane
             root = new Pane();
-            BackgroundImage background = new BackgroundImage(
-                    new Image("spaceBg.jpg"),
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundPosition.DEFAULT,
-                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
-            );
-            root.setBackground(new Background(background));
-
-            //Set background music
-            backgroundMusic = new BackgroundMusic(page);
-            backgroundMusic.start();
-
-            //Draw UI Components
+            root.setStyle("-fx-background-color: black;");
             Platform.runLater(() -> {
-                //Add components into root
                 root.getChildren().addAll(
                         titleLabel,
-                        newGameButton,
-                        loadGameButton,
-                        rankingButton,
-                        instructionButton,
-                        quitButton
+                        scoreLabel,
+                        timeLabel,
+                        inputLayout,
+                        homeButton
                 );
+
                 //Set the main scene
                 scene = new Scene(root, sceneWidth, sceneHeight);
                 //scene.getStylesheets().add("style.css");
@@ -258,213 +552,77 @@ public class Main extends Application implements GameEngine.OnAction {
                 primaryStage.setResizable(false);
                 primaryStage.show();
             });
-
-            //Set the game engine
-            engine = new GameEngine();
-            engine.setOnAction(this);
-            engine.setFps(120);
         }
-        //In Game
-        else if (page==1){
-            if (isLoad){
-                isLoad = false;
-                LoadSave.loadGame();
-                level = LoadSave.data.level;
-                score = LoadSave.data.score;
-                time = LoadSave.data.time;
-                heart = LoadSave.data.heart;
-                blockClass = LoadSave.data.blockClass;
-                heartClass = LoadSave.data.heartClass;
-                bonusClass = LoadSave.data.bonusClass;
-                ballClass = LoadSave.data.ballClass;
-                breakClass = LoadSave.data.breakClass;
-            }
-            else {
-                if (level==1){
-                    heart = 3;
-                    score = 0;
-                    time = 0;
-                }
-                else {
-                    //initialize except score and heart and time
-                    time = 0;
-                }
-                //Initialize
-                onInit();
-            }
+        //Next level
+        else {
+            //Set Label
+            Label titleLabel = new Label();
+            Image titleImage = new Image("levelUp.png");
+            ImageView titleImageView = new ImageView(titleImage);
+            titleImageView.setFitWidth(titleImage.getWidth() * 0.5);
+            titleImageView.setFitHeight(titleImage.getHeight() * 0.5);
+            titleLabel.setGraphic(titleImageView);
+            titleLabel.setTranslateX(120);
+            titleLabel.setTranslateY(120);
+            titleLabel.setVisible(true);
 
-            //Set Labels
-            scoreLabel = new Label("Score: " + score);
-            levelLabel = new Label("Level " + level);
-            heartLabel = new Label("Heart : " + heart);
-            timeLabel = new Label("Time : " + time);
-            levelLabel.setTranslateX(5);
-            scoreLabel.setTranslateX(sceneWidth / 4);
-            timeLabel.setTranslateX(sceneWidth / 2);
-            heartLabel.setTranslateX(sceneWidth*3 / 4);
+            //set buttons
+            Button nextGameButton = new Button();
+            Button homeButton = new Button();
+            Image nextGameImage = new Image("nextLevelButton.png");
+            Image homeImage = new Image("homeButton.png");
+            ImageView nextGameImageView = new ImageView(nextGameImage);
+            ImageView homeImageView = new ImageView(homeImage);
+            nextGameImageView.setFitWidth(nextGameImage.getWidth() * 0.3);
+            nextGameImageView.setFitHeight(nextGameImage.getHeight() * 0.3);
+            homeImageView.setFitWidth(homeImage.getWidth() * 0.3);
+            homeImageView.setFitHeight(homeImage.getHeight() * 0.3);
+            nextGameButton.setGraphic(nextGameImageView);
+            homeButton.setGraphic(homeImageView);
+            nextGameButton.setTranslateX(170);
+            nextGameButton.setTranslateY(300);
+            homeButton.setTranslateX(170);
+            homeButton.setTranslateY(360);
+            nextGameButton.setVisible(true);
+            homeButton.setVisible(true);
+            nextGameButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    try {
+                        page = 1;
+                        //level++;
+                        start(primaryStage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            homeButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    try {
+                        page = 0;
+                        level = 1;
+                        start(primaryStage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
 
             //Set the root pane
             root = new Pane();
-            BackgroundImage background = new BackgroundImage(
-                    new Image("bg.jpg"),
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundPosition.DEFAULT,
-                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
-            );
-            root.setBackground(new Background(background));
-
-            //Set background music
-            backgroundMusic = new BackgroundMusic(page);
-            backgroundMusic.start();
-
+            root.setStyle("-fx-background-color: black;");
             Platform.runLater(() -> {
                 root.getChildren().addAll(
-                        scoreLabel,
-                        heartLabel,
-                        levelLabel,
-                        timeLabel,
-                        breakClass.rect
+                        titleLabel,
+                        nextGameButton,
+                        homeButton
                 );
-                for (Ball.BallEntry ball : ballClass.balls){
-                    root.getChildren().add(ball.circle);
-                }
-                for (Block.BlockEntry block : blockClass.blocks) {
-                    root.getChildren().add(block.rect);
-                }
-                for (Bonus.BonusEntry bonus : bonusClass.bonuses){
-                    root.getChildren().add(bonus.rect);
-                }
-                for (Heart.HeartEntry heart : heartClass.hearts){
-                    root.getChildren().add(heart.rect);
-                }
 
                 //Set the main scene
                 scene = new Scene(root, sceneWidth, sceneHeight);
-                scene.getStylesheets().add("style.css");
-                scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-                    @Override
-                    public void handle(KeyEvent keyEvent) {
-                        switch (keyEvent.getCode()) {
-                            case LEFT:
-                                breakClass.move(KeyCode.LEFT);
-                                break;
-                            case RIGHT:
-                                breakClass.move(KeyCode.RIGHT);
-                                break;
-                            case S:
-                                LoadSave.saveGame(
-                                        level,
-                                        score,
-                                        time,
-                                        heart,
-                                        blockClass,
-                                        heartClass,
-                                        bonusClass,
-                                        ballClass,
-                                        breakClass
-                                );
-                                break;
-                            case SPACE:
-                                engine.stop();
-
-                                //Set the pop up stage
-                                Stage popupStage = new Stage();
-                                popupStage.initModality(Modality.APPLICATION_MODAL);
-                                popupStage.setResizable(false);
-                                popupStage.initStyle(StageStyle.UNDECORATED);
-                                popupStage.setX(630);  // Set X coordinate
-                                popupStage.setY(300);  // Set Y coordinate
-
-                                //Set a buttons
-                                Button continueButton = new Button();
-                                Button resetButton = new Button();
-                                Button homeButton = new Button();
-                                Image continueImage = new Image("continueButton.png");
-                                Image resetImage = new Image("resetButton.png");
-                                Image homeImage = new Image("homeButton.png");
-                                ImageView continueImageView = new ImageView(continueImage);
-                                ImageView resetImageView = new ImageView(resetImage);
-                                ImageView homeImageView = new ImageView(homeImage);
-                                continueImageView.setFitWidth(continueImage.getWidth() * 0.3);
-                                continueImageView.setFitHeight(continueImage.getHeight() * 0.3);
-                                resetImageView.setFitWidth(resetImage.getWidth() * 0.3);
-                                resetImageView.setFitHeight(resetImage.getHeight() * 0.3);
-                                homeImageView.setFitWidth(homeImage.getWidth() * 0.3);
-                                homeImageView.setFitHeight(homeImage.getHeight() * 0.3);
-                                continueButton.setGraphic(continueImageView);
-                                resetButton.setGraphic(resetImageView);
-                                homeButton.setGraphic(homeImageView);
-                                continueButton.setTranslateX(60);
-                                continueButton.setTranslateY(30);
-                                resetButton.setTranslateX(60);
-                                resetButton.setTranslateY(30);
-                                homeButton.setTranslateX(60);
-                                homeButton.setTranslateY(30);
-                                continueButton.setVisible(true);
-                                resetButton.setVisible(true);
-                                homeButton.setVisible(true);
-
-                                //Set the event on each buttons
-                                continueButton.setOnAction(new EventHandler<ActionEvent>() {
-                                    @Override
-                                    public void handle(ActionEvent actionEvent) {
-                                        System.out.println("continue");
-                                        engine.go();
-                                        popupStage.close();
-                                    }
-                                });
-                                resetButton.setOnAction(new EventHandler<ActionEvent>() {
-                                    @Override
-                                    public void handle(ActionEvent actionEvent) {
-                                        System.out.println("reset");
-                                        popupStage.close();
-                                        try {
-                                            page = 1;
-                                            start(primaryStage);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                                homeButton.setOnAction(new EventHandler<ActionEvent>() {
-                                    @Override
-                                    public void handle(ActionEvent actionEvent) {
-                                        System.out.println("home");
-                                        popupStage.close();
-                                        backgroundMusic.stop();
-
-                                        try {
-                                            page = 0;
-                                            start(primaryStage);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-                                });
-                                Platform.runLater(() -> {
-                                    // Design the content of the popup (a simple example with a label)
-                                    VBox popupLayout = new VBox();
-                                    popupLayout.setSpacing(10);
-                                    popupLayout.getChildren().addAll(continueButton, resetButton, homeButton);
-                                    popupLayout.setStyle(
-                                            "-fx-background-color: black; " +
-                                            "-fx-border-color: white; " +
-                                            "-fx-border-width: 2px; "
-                                    );
-
-                                    //Set a popup scene
-                                    Scene popupScene = new Scene(popupLayout, 300, 200);
-                                    popupStage.setScene(popupScene);
-
-                                    // Show the popup
-                                    popupStage.show();
-                                });
-                                break;
-                        }
-                    }
-                });
+                //scene.getStylesheets().add("style.css");
 
                 //Set the primary stage
                 primaryStage.setTitle("Brick Game");
@@ -472,189 +630,21 @@ public class Main extends Application implements GameEngine.OnAction {
                 primaryStage.setResizable(false);
                 primaryStage.show();
             });
-
-            //Set the game engine
-            engine = new GameEngine();
-            engine.setOnAction(this);
-            engine.setFps(120);
-
-            //Count down 3 seconds and engine.start()
-            new Score().showCountDown(this, engine);
         }
-        //After the game
-        else if (page==2){
-            //Clear the last level or GameOver
-            if (level==11 || heart==0){
-                //Set Label
-                titleLabel = new Label();
-                scoreLabel = new Label("Score : " + score);
-                timeLabel = new Label("Time : " + time);
-                scoreLabel.setTextFill(Color.WHITE);
-                timeLabel.setTextFill(Color.WHITE);
-                scoreLabel.setStyle("-fx-font-size: 24px;");
-                timeLabel.setStyle("-fx-font-size: 24px;");
-                Image titleImage = heart==0 ? new Image("gameOver.png") : new Image("completeTitle.png");
-                ImageView titleImageView = new ImageView(titleImage);
-                titleImageView.setFitWidth(titleImage.getWidth() * 0.5);
-                titleImageView.setFitHeight(titleImage.getHeight() * 0.5);
-                titleLabel.setGraphic(titleImageView);
-                titleLabel.setTranslateX(120);
-                titleLabel.setTranslateY(120);
-                scoreLabel.setTranslateX(200);
-                scoreLabel.setTranslateY(300);
-                timeLabel.setTranslateX(200);
-                timeLabel.setTranslateY(350);
-                titleLabel.setVisible(true);
-                scoreLabel.setVisible(true);
-                timeLabel.setVisible(true);
+        //Turn off background music
+        backgroundMusic.stop();
+    }
 
-                // Create a TextField for username input
-                TextField usernameField = new TextField();
-                usernameField.setPromptText("Enter your username"); // Set a prompt text
+    public static void main(String[] args) {
+        launch(args);
+    }
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
 
-                // Create a Button to submit the username
-                Button submitButton = new Button("Submit");
-                submitButton.setOnAction(event -> {
-                    String username = usernameField.getText();
-                    System.out.println("Entered Username: " + username);
-                    // You can handle the entered username as needed
-
-                    ranking = new Ranking();
-                    ranking.addEntry(username, score, time);
-                });
-
-                HBox inputLayout = new HBox(usernameField, submitButton);
-                inputLayout.setSpacing(10);
-                inputLayout.setTranslateX(170);
-                inputLayout.setTranslateY(400);
-
-                //set buttons
-                homeButton = new Button();
-                Image homeImage = new Image("homeButton.png");
-                ImageView homeImageView = new ImageView(homeImage);
-                homeImageView.setFitWidth(homeImage.getWidth() * 0.3);
-                homeImageView.setFitHeight(homeImage.getHeight() * 0.3);
-                homeButton.setGraphic(homeImageView);
-                homeButton.setTranslateX(170);
-                homeButton.setTranslateY(450);
-                homeButton.setVisible(true);
-                homeButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try {
-                            page = 0;
-                            level = 1;
-                            start(primaryStage);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                //Set the root pane
-                root = new Pane();
-                root.setStyle("-fx-background-color: black;");
-                Platform.runLater(() -> {
-                    root.getChildren().addAll(
-                            titleLabel,
-                            scoreLabel,
-                            timeLabel,
-                            inputLayout,
-                            homeButton
-                    );
-
-                    //Set the main scene
-                    scene = new Scene(root, sceneWidth, sceneHeight);
-                    //scene.getStylesheets().add("style.css");
-
-                    //Set the primary stage
-                    primaryStage.setTitle("Brick Game");
-                    primaryStage.setScene(scene);
-                    primaryStage.setResizable(false);
-                    primaryStage.show();
-                });
-            }
-            //Next level
-            else {
-                //Set Label
-                titleLabel = new Label();
-                Image titleImage = new Image("levelUp.png");
-                ImageView titleImageView = new ImageView(titleImage);
-                titleImageView.setFitWidth(titleImage.getWidth() * 0.5);
-                titleImageView.setFitHeight(titleImage.getHeight() * 0.5);
-                titleLabel.setGraphic(titleImageView);
-                titleLabel.setTranslateX(120);
-                titleLabel.setTranslateY(120);
-                titleLabel.setVisible(true);
-
-                //set buttons
-                nextGameButton = new Button();
-                homeButton = new Button();
-                Image nextGameImage = new Image("nextLevelButton.png");
-                Image homeImage = new Image("homeButton.png");
-                ImageView nextGameImageView = new ImageView(nextGameImage);
-                ImageView homeImageView = new ImageView(homeImage);
-                nextGameImageView.setFitWidth(nextGameImage.getWidth() * 0.3);
-                nextGameImageView.setFitHeight(nextGameImage.getHeight() * 0.3);
-                homeImageView.setFitWidth(homeImage.getWidth() * 0.3);
-                homeImageView.setFitHeight(homeImage.getHeight() * 0.3);
-                nextGameButton.setGraphic(nextGameImageView);
-                homeButton.setGraphic(homeImageView);
-                nextGameButton.setTranslateX(170);
-                nextGameButton.setTranslateY(300);
-                homeButton.setTranslateX(170);
-                homeButton.setTranslateY(360);
-                nextGameButton.setVisible(true);
-                homeButton.setVisible(true);
-                nextGameButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try {
-                            page = 1;
-                            //level++;
-                            start(primaryStage);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                homeButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try {
-                            page = 0;
-                            level = 1;
-                            start(primaryStage);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                //Set the root pane
-                root = new Pane();
-                root.setStyle("-fx-background-color: black;");
-                Platform.runLater(() -> {
-                    root.getChildren().addAll(
-                            titleLabel,
-                            nextGameButton,
-                            homeButton
-                    );
-
-                    //Set the main scene
-                    scene = new Scene(root, sceneWidth, sceneHeight);
-                    //scene.getStylesheets().add("style.css");
-
-                    //Set the primary stage
-                    primaryStage.setTitle("Brick Game");
-                    primaryStage.setScene(scene);
-                    primaryStage.setResizable(false);
-                    primaryStage.show();
-                });
-            }
-            //Turn off background music
-            backgroundMusic.stop();
-        }
+        if (page==0) homePage();
+        else if (page==1) gamePage();
+        else if (page==2) menuPage();
     }
     @Override
     public void onInit(){

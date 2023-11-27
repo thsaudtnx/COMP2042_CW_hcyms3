@@ -1,5 +1,7 @@
 package brickGame;
 
+import brickGame.components.*;
+
 import java.io.*;
 
 public class LoadSave {

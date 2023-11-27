@@ -1,5 +1,6 @@
-package brickGame;
+package brickGame.components;
 
+import brickGame.constants.Colour;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
