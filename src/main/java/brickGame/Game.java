@@ -1,6 +1,9 @@
 package brickGame;
 
 import brickGame.components.*;
+import brickGame.utils.LoadSave;
+import brickGame.utils.Ranking;
+import brickGame.utils.Show;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,12 +17,20 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
+/**
+ * The Game class represents a JavaFX game implementation.
+ * It includes methods for handling different game pages, game logic,
+ * and UI updates using a GameEngine.
+ */
 public class Game implements GameEngine.OnAction{
     private GameEngine engine;
     private GameVariables gameVariables = new GameVariables();
     private GameView gameView = new GameView();
     Stage primaryStage;
+    /**
+     * Sets up and displays the home page of the game.
+     * This page includes buttons for loading a saved game or starting a new game.
+     */
     public void homePage(){
         gameView.drawHomePage(primaryStage);
         gameView.loadGameButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -35,7 +46,7 @@ public class Game implements GameEngine.OnAction{
                         e.printStackTrace();
                     }
                 } else {
-                    //There is no saved file
+                    System.out.println("There is no saved game");
                 }
             }
         });
@@ -58,19 +69,24 @@ public class Game implements GameEngine.OnAction{
         engine.setOnAction(this);
         engine.setFps(120);
     }
+    /**
+     * Sets up and displays the game page, handling both new games and loaded games.
+     * If a game is loaded, it loads the saved data. Otherwise, it initializes the game state.
+     * Listens for key events, such as movement and save actions, and displays relevant UI components.
+     */
     public void gamePage(){
         if (gameVariables.isLoad){
             gameVariables.isLoad = false;
             LoadSave.loadGame();
-            gameVariables.level = LoadSave.data.level;
-            gameVariables.score = LoadSave.data.score;
-            gameVariables.time = LoadSave.data.time;
-            gameVariables.heart = LoadSave.data.heart;
-            gameVariables.blockClass = LoadSave.data.blockClass;
-            gameVariables.heartClass = LoadSave.data.heartClass;
-            gameVariables.bonusClass = LoadSave.data.bonusClass;
-            gameVariables.ballClass = LoadSave.data.ballClass;
-            gameVariables.breakClass = LoadSave.data.breakClass;
+            gameVariables.level = LoadSave.Data.level;
+            gameVariables.score = LoadSave.Data.score;
+            gameVariables.time = LoadSave.Data.time;
+            gameVariables.heart = LoadSave.Data.heart;
+            gameVariables.blockClass = LoadSave.Data.blockClass;
+            gameVariables.heartClass = LoadSave.Data.heartClass;
+            gameVariables.bonusClass = LoadSave.Data.bonusClass;
+            gameVariables.ballClass = LoadSave.Data.ballClass;
+            gameVariables.breakClass = LoadSave.Data.breakClass;
         }
         else {
             if (gameVariables.level==1){
@@ -374,6 +390,11 @@ public class Game implements GameEngine.OnAction{
         //Count down 3 seconds and engine.start()
         new Show().showCountDown(gameView.root, engine);
     }
+    /**
+     * Displays the menu page, handling both game completion and level progression.
+     * Clears the last level or displays a game over message based on the game state.
+     * Provides options to submit scores, return to the home page, or proceed to the next level.
+     */
     public void menuPage(){
         //Clear the last level or GameOver
         if (gameVariables.level==11 || gameVariables.heart==0){
@@ -434,6 +455,11 @@ public class Game implements GameEngine.OnAction{
             });
         }
     }
+    /**
+     * Initializes and starts the application based on the current game page.
+     *
+     * @param primaryStage The primary stage for the application window.
+     */
     public void start(Stage primaryStage){
         this.primaryStage = primaryStage;
 
@@ -441,10 +467,17 @@ public class Game implements GameEngine.OnAction{
         else if (gameVariables.page==1) gamePage();
         else if (gameVariables.page==2) menuPage();
     }
+    /**
+     * Initializes the game variables on start.
+     */
     @Override
     public void onInit(){
         gameVariables.onInit();
     }
+    /**
+     * Updates the game state during each frame.
+     * Checks for collisions, updates positions, and handles game events.
+     */
     @Override
     public void onUpdate() {
         //Clear the level
@@ -590,6 +623,11 @@ public class Game implements GameEngine.OnAction{
             }
         });
     }
+    /**
+     * Updates the game time.
+     *
+     * @param time The current game time.
+     */
     @Override
     public void onTime(long time) {
         gameVariables.time = time;

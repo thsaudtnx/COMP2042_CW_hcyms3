@@ -10,6 +10,9 @@ import javafx.util.Duration;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * This class represents the behavior of balls in the game.
+ */
 public class Ball{
     public ArrayList<BallEntry> balls;
     private static int sceneWidth = 500;
@@ -18,6 +21,9 @@ public class Ball{
     private static long goldTime = 0;
     private static MediaPlayer ballSound;
     private static String ballSoundPath = "/ball.mp3";
+    /**
+     * Constructor for the Ball class.
+     */
     public Ball(){
         balls = new ArrayList<BallEntry>();
         isGoldStatus = false;
@@ -28,6 +34,11 @@ public class Ball{
         ballSound = new MediaPlayer(new Media(path));
 
     }
+    /**
+     * Checks if the gold time is over and updates the ball appearance accordingly.
+     *
+     * @param time The current time in the game.
+     */
     public void checkGoldTimeOver(long time){
         if (isGoldStatus && time - goldTime > 5) {
             for (BallEntry ball : balls){
@@ -37,6 +48,11 @@ public class Ball{
             isGoldStatus = false;
         }
     }
+    /**
+     * Sets the gold time status and updates the appearance of balls accordingly.
+     *
+     * @param time The current time in the game.
+     */
     public void setGoldTime(long time){
         goldTime = time;
         isGoldStatus = true;
@@ -46,9 +62,17 @@ public class Ball{
         System.out.println("gold ball");
         //root.getStyleClass().add("goldRoot");
     }
+    /**
+     * Adds a new ball to the list of balls.
+     *
+     * @param newBall The new BallEntry object to be added.
+     */
     public void addBall(BallEntry newBall){
         balls.add(newBall);
     }
+    /**
+     * Represents an individual ball in the game.
+     */
     public static class BallEntry implements Serializable {
         public Circle circle;
         public double xBall;
@@ -61,13 +85,18 @@ public class Ball{
         public Block.BlockEntry collideBlock;
         public double vX = 1.000;
         public double vY = 1.000;
-        //public double v = 1.000;
+
+        /**
+         * Resets the collision flags for the ball.
+         */
         public void resetCollideFlags() {
             collideToBlock = false;
             collideToBottomWall = false;
             collideBlock = null;
         }
-
+        /**
+         * Constructs a new BallEntry with default values.
+         */
         public BallEntry() {
             circle = new Circle();
             xBall = (sceneWidth - ballRadius) / 2;
@@ -77,6 +106,12 @@ public class Ball{
             vX = 1.000;
             vY = 1.000;
         }
+        /**
+         * Constructs a new BallEntry with specified row and column positions.
+         *
+         * @param row    The row position of the ball.
+         * @param column The column position of the ball.
+         */
         public BallEntry(int row, int column){
             circle = new Circle();
             xBall = (column * (Block.width)) + Block.paddingHeight + (Block.width / 2) - 15;
@@ -86,6 +121,13 @@ public class Ball{
             vX = 1.000;
             vY = 1.000;
         }
+        /**
+         * Updates the physics of the ball based on its movement, collisions, and interactions with other game elements.
+         *
+         * @param rect   The Break object representing the break in the game.
+         * @param level  The current level in the game.
+         * @param blocks The list of BlockEntry objects representing the blocks in the game.
+         */
         public void setPhysicsToBall(Break rect, int level, ArrayList<Block.BlockEntry> blocks) {
             //v = ((time - hitTime) / 1000.000) + 1.000;
             if (goDownBall) {
@@ -215,6 +257,11 @@ public class Ball{
                 return;
             }
         }
+        /**
+         * Checks if the ball hits the bottom wall without being in gold status.
+         *
+         * @return True if the ball hits the bottom wall, false otherwise.
+         */
         public boolean isMinusHeart(){
             return !isGoldStatus && collideToBottomWall;
         }

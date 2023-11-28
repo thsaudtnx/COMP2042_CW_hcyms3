@@ -1,13 +1,18 @@
-package brickGame;
+package brickGame.utils;
 
 import brickGame.components.*;
 
 import java.io.*;
-
+/**
+ * The LoadSave class manages the saving and loading of game data to and from a file.
+ */
 public class LoadSave {
     final public static String savePath = "C:/Users/messi/Desktop/brickGameData";
     final public static String fileName = "savedData.obj";
     static Data data;
+    /**
+     * The Data class represents the serialized game data.
+     */
     public static class Data implements Serializable{
         public static int level;
         public static int score;
@@ -18,6 +23,19 @@ public class LoadSave {
         public static Bonus bonusClass;
         public static Ball ballClass;
         public static Break breakClass;
+        /**
+         * Constructs a Data object with the given game data.
+         *
+         * @param level      The level of the game.
+         * @param score      The score of the game.
+         * @param time       The time of the game.
+         * @param heart      The number of hearts in the game.
+         * @param blockClass The Block object in the game.
+         * @param heartClass The Heart object in the game.
+         * @param bonusClass The Bonus object in the game.
+         * @param ballClass  The Ball object in the game.
+         * @param breakClass The Break object in the game.
+         */
         public Data(
                 int level,
                 int score,
@@ -42,6 +60,19 @@ public class LoadSave {
             this.breakClass = breakClass;
         }
     }
+    /**
+     * Saves the current game data to a file.
+     *
+     * @param level      The level of the game.
+     * @param score      The score of the game.
+     * @param time       The time of the game.
+     * @param heart      The number of hearts in the game.
+     * @param blockClass The Block object in the game.
+     * @param heartClass The Heart object in the game.
+     * @param bonusClass The Bonus object in the game.
+     * @param ballClass  The Ball object in the game.
+     * @param breakClass The Break object in the game.
+     */
     public static void saveGame(
             int level,
             int score,
@@ -113,7 +144,11 @@ public class LoadSave {
         }
         System.out.println("Game saved!");
     }
-
+    /**
+     * Checks if a saved game file exists.
+     *
+     * @return True if the saved game file exists, false otherwise.
+     */
     public static boolean isExistSavedFile(){
         File saveFile = new File(savePath, fileName); // Create a File object for the save file
         if (!saveFile.exists()) {
@@ -122,6 +157,9 @@ public class LoadSave {
         }
         return true;
     }
+    /**
+     * Loads the saved game data from the file.
+     */
     public static void loadGame() {
         // Exit the method if the file doesn't exist
         if (!isExistSavedFile()) return;

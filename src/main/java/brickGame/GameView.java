@@ -1,6 +1,7 @@
 package brickGame;
 
 import brickGame.effects.BackgroundMusic;
+import brickGame.utils.Ranking;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,7 +16,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class GameView {
+/**
+ * The {@code GameView} class implements the {@code Page} interface and represents
+ * the view of the game, including the home page, game page, and menu pages.
+ */
+public class GameView implements GamePage {
     final public int sceneWidth = 500;
     final public int sceneHeight = 700;
     BackgroundMusic backgroundMusic;
@@ -36,6 +41,12 @@ public class GameView {
     public Image titleImage;
     public Button homeButton;
     public Button nextGameButton;
+    /**
+     * Draws the home page of the game.
+     *
+     * @param primaryStage The primary stage of the JavaFX application.
+     */
+    @Override
     public void drawHomePage(Stage primaryStage){
         //Set Label
         titleLabel = new Label();
@@ -230,6 +241,12 @@ public class GameView {
             primaryStage.show();
         });
     }
+    /**
+     * Draws the game page with the game elements.
+     *
+     * @param primaryStage The primary stage of the JavaFX application.
+     */
+    @Override
     public void drawGamePage(Stage primaryStage){
         //Set Labels
         scoreLabel = new Label("Score: ");
@@ -275,6 +292,12 @@ public class GameView {
             primaryStage.show();
         });
     }
+    /**
+     * Draws the end menu page after completing a level.
+     *
+     * @param primaryStage The primary stage of the JavaFX application.
+     */
+    @Override
     public void drawMenuPageEnd(Stage primaryStage){
         //Set Label
         titleLabel = new Label();
@@ -345,6 +368,12 @@ public class GameView {
         //Turn off background music
         backgroundMusic.stop();
     }
+    /**
+     * Draws the menu page after completing a level and proceeding to the next level.
+     *
+     * @param primaryStage The primary stage of the JavaFX application.
+     */
+    @Override
     public void drawMenuPageNextLevel(Stage primaryStage){
         //Set Label
         Label titleLabel = new Label();

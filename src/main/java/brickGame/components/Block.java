@@ -10,9 +10,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Represents a collection of blocks in the game.
+ */
 public class Block {
     public ArrayList<BlockEntry> blocks;
     public static int destroyedBlockCount;
+    /**
+     * Constructs a new Block with the specified level.
+     *
+     * @param level The current level in the game.
+     */
     public Block(int level){
         blocks = new ArrayList<>();
         destroyedBlockCount = 0;
@@ -44,6 +52,11 @@ public class Block {
             }
         }
     }
+    /**
+     * Checks if the level is cleared by comparing the number of destroyed blocks with the total number of blocks.
+     *
+     * @return True if the level is cleared, false otherwise.
+     */
     public boolean checkClearLevel(){
         return destroyedBlockCount == blocks.size();
     }
@@ -56,6 +69,9 @@ public class Block {
     public static int BLOCK_STAR = 101;
     public static int BLOCK_HEART = 102;
     public static int BLOCK_BALL = 103;
+    /**
+     * Represents an individual block in the game.
+     */
     public class BlockEntry implements Serializable{
         public int row;
         public int column;
@@ -66,7 +82,14 @@ public class Block {
         public int x;
         public int y;
         public Rectangle rect;
-
+        /**
+         * Constructs a BlockEntry with the specified parameters.
+         *
+         * @param row    The row of the block.
+         * @param column The column of the block.
+         * @param color  The color of the block.
+         * @param type   The type of the block.
+         */
         public BlockEntry(int row, int column, Color color, int type) {
             this.row = row;
             this.column = column;
@@ -75,7 +98,9 @@ public class Block {
 
             draw();
         }
-
+        /**
+         * Draws the graphical representation of the block based on its type.
+         */
         private void draw() {
             x = (column * width) + paddingHeight;
             y = (row * height) + paddingTop;

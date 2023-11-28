@@ -4,7 +4,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-
+/**
+ * Represents the player's paddle (break) in the game.
+ */
 public class Break {
     private int sceneWidth = 500;
     private int sceneHeight = 700;
@@ -15,6 +17,9 @@ public class Break {
     public double xBreak;
     public double yBreak;
     public Rectangle rect;
+    /**
+     * Constructs a Break object, initializing the break's position and rectangle.
+     */
     public Break() {
         rect = new Rectangle();
         xBreak = (sceneWidth - breakWidth )/ 2;
@@ -27,6 +32,11 @@ public class Break {
         ImagePattern pattern = new ImagePattern(new Image("break.png"));
         rect.setFill(pattern);
     }
+    /**
+     * Moves the break based on the specified KeyCode.
+     *
+     * @param keyCode The KeyCode representing the direction of movement (LEFT or RIGHT).
+     */
     public void move(final KeyCode keyCode) {
         new Thread(new Runnable() {
             @Override
