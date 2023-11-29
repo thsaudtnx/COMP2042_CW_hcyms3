@@ -1,9 +1,9 @@
 package brickGame;
 
-import brickGame.components.*;
-import brickGame.utils.LoadSave;
-import brickGame.utils.Ranking;
-import brickGame.utils.Show;
+import brickGame.GameComponents.*;
+import brickGame.GameUtils.LoadSave;
+import brickGame.GameUtils.Ranking;
+import brickGame.GameUtils.Show;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,20 +19,20 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 /**
  * The Game class represents a JavaFX game implementation.
- * It includes methods for handling different game pages, game logic,
+ * It includes methods for handling different game pages, game logic, game controller
  * and UI updates using a GameEngine.
  */
-public class Game implements GameEngine.OnAction{
+public class Game implements GameEngine.OnAction, GameController{
     private GameEngine engine;
     private GameVariables gameVariables = new GameVariables();
     private GameView gameView = new GameView();
     Stage primaryStage;
     /**
-     * Sets up and displays the home page of the game.
-     * This page includes buttons for loading a saved game or starting a new game.
+     * Handles the controller logic for the home page, including event
+     * handlers for the new game and load game buttons.
      */
-    public void homePage(){
-        gameView.drawHomePage(primaryStage);
+    @Override
+    public void homePageController(){
         gameView.loadGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -63,46 +63,13 @@ public class Game implements GameEngine.OnAction{
                 }
             }
         });
-
-        //Set the game engine
-        engine = new GameEngine();
-        engine.setOnAction(this);
-        engine.setFps(120);
     }
     /**
-     * Sets up and displays the game page, handling both new games and loaded games.
-     * If a game is loaded, it loads the saved data. Otherwise, it initializes the game state.
-     * Listens for key events, such as movement and save actions, and displays relevant UI components.
+     * Handles the controller logic for the game page, including event
+     * handlers for key presses and pop-up interactions.
      */
-    public void gamePage(){
-        if (gameVariables.isLoad){
-            gameVariables.isLoad = false;
-            LoadSave.loadGame();
-            gameVariables.level = LoadSave.Data.level;
-            gameVariables.score = LoadSave.Data.score;
-            gameVariables.time = LoadSave.Data.time;
-            gameVariables.heart = LoadSave.Data.heart;
-            gameVariables.blockClass = LoadSave.Data.blockClass;
-            gameVariables.heartClass = LoadSave.Data.heartClass;
-            gameVariables.bonusClass = LoadSave.Data.bonusClass;
-            gameVariables.ballClass = LoadSave.Data.ballClass;
-            gameVariables.breakClass = LoadSave.Data.breakClass;
-        }
-        else {
-            if (gameVariables.level==1){
-                gameVariables.heart = 3;
-                gameVariables.score = 0;
-                gameVariables.time = 0;
-            }
-            else {
-                //initialize except score and heart and time
-                gameVariables.time = 0;
-            }
-            //Initialize
-            onInit();
-        }
-
-        gameView.drawGamePage(primaryStage);
+    @Override
+    public void gamePageController(){
         gameView.scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -381,24 +348,15 @@ public class Game implements GameEngine.OnAction{
             primaryStage.setResizable(false);
             primaryStage.show();
         });
-
-        //Set the game engine
-        engine = new GameEngine();
-        engine.setOnAction(this);
-        engine.setFps(120);
-
-        //Count down 3 seconds and engine.start()
-        new Show().showCountDown(gameView.root, engine);
     }
     /**
-     * Displays the menu page, handling both game completion and level progression.
-     * Clears the last level or displays a game over message based on the game state.
-     * Provides options to submit scores, return to the home page, or proceed to the next level.
+     * Handles the controller logic for the menu page, including event
+     * handlers for different scenarios such as game over or advancing
+     * to the next level.
      */
-    public void menuPage(){
-        //Clear the last level or GameOver
+    @Override
+    public void menuPageController(){
         if (gameVariables.level==11 || gameVariables.heart==0){
-            gameView.drawMenuPageEnd(primaryStage);
             //Set Label
             gameView.scoreLabel.setText("Score : " + gameVariables.score);
             gameView.timeLabel.setText("Time : " + gameVariables.time);
@@ -428,7 +386,6 @@ public class Game implements GameEngine.OnAction{
         }
         //Next level
         else {
-            gameView.drawMenuPageNextLevel(primaryStage);
             gameView.nextGameButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
@@ -453,6 +410,86 @@ public class Game implements GameEngine.OnAction{
                     }
                 }
             });
+        }
+    }
+    /**
+     * Sets up and displays the home page of the game.
+     * This page includes buttons for loading a saved game or starting a new game.
+     */
+    public void homePage(){
+        //View
+        gameView.drawHomePage(primaryStage);
+
+        //Controller
+        homePageController();
+
+        //Set the game engine
+        engine = new GameEngine();
+        engine.setOnAction(this);
+        engine.setFps(120);
+    }
+    /**
+     * Sets up and displays the game page, handling both new games and loaded games.
+     * If a game is loaded, it loads the saved data. Otherwise, it initializes the game state.
+     * Listens for key events, such as movement and save actions, and displays relevant UI components.
+     */
+    public void gamePage(){
+        if (gameVariables.isLoad){
+            gameVariables.isLoad = false;
+            LoadSave.loadGame();
+            gameVariables.level = LoadSave.Data.level;
+            gameVariables.score = LoadSave.Data.score;
+            gameVariables.time = LoadSave.Data.time;
+            gameVariables.heart = LoadSave.Data.heart;
+            gameVariables.blockClass = LoadSave.Data.blockClass;
+            gameVariables.heartClass = LoadSave.Data.heartClass;
+            gameVariables.bonusClass = LoadSave.Data.bonusClass;
+            gameVariables.ballClass = LoadSave.Data.ballClass;
+            gameVariables.breakClass = LoadSave.Data.breakClass;
+        }
+        else {
+            if (gameVariables.level==1){
+                gameVariables.heart = 3;
+                gameVariables.score = 0;
+                gameVariables.time = 0;
+            }
+            else {
+                //initialize except score and heart and time
+                gameVariables.time = 0;
+            }
+            //Initialize
+            onInit();
+        }
+
+        //View
+        gameView.drawGamePage(primaryStage);
+
+        //Controller
+        gamePageController();
+
+        //Set the game engine
+        engine = new GameEngine();
+        engine.setOnAction(this);
+        engine.setFps(120);
+
+        //Count down 3 seconds and engine.start()
+        new Show().showCountDown(gameView.root, engine);
+    }
+    /**
+     * Displays the menu page, handling both game completion and level progression.
+     * Clears the last level or displays a game over message based on the game state.
+     * Provides options to submit scores, return to the home page, or proceed to the next level.
+     */
+    public void menuPage(){
+        //Clear the last level or GameOver
+        if (gameVariables.level==11 || gameVariables.heart==0){
+            gameView.drawMenuPageEnd(primaryStage);
+            menuPageController();
+        }
+        //Next level
+        else {
+            gameView.drawMenuPageNextLevel(primaryStage);
+            menuPageController();
         }
     }
     /**

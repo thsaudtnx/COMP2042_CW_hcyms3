@@ -1,6 +1,6 @@
-package brickGame.utils;
+package brickGame.GameUtils;
 
-import brickGame.components.*;
+import brickGame.GameComponents.*;
 
 import java.io.*;
 /**

@@ -5,13 +5,13 @@ module brickGame {
 
     opens brickGame to javafx.fxml;
     exports brickGame;
-    exports brickGame.constants;
-    opens brickGame.constants to javafx.fxml;
-    exports brickGame.components;
-    opens brickGame.components to javafx.fxml;
-    exports brickGame.effects;
-    opens brickGame.effects to javafx.fxml;
-    exports brickGame.utils;
-    opens brickGame.utils to javafx.fxml;
+    exports brickGame.GameStyle;
+    opens brickGame.GameStyle to javafx.fxml;
+    exports brickGame.GameComponents;
+    opens brickGame.GameComponents to javafx.fxml;
+    exports brickGame.GameEffects;
+    opens brickGame.GameEffects to javafx.fxml;
+    exports brickGame.GameUtils;
+    opens brickGame.GameUtils to javafx.fxml;
 
 }

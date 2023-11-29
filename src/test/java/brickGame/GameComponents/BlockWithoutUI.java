@@ -1,19 +1,12 @@
-package brickGame.components;
+package brickGame.GameComponents;
 
-import brickGame.constants.Colour;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
- * Represents a collection of blocks in the game.
- */
-public class Block {
+class BlockWithoutUI {
     public ArrayList<BlockEntry> blocks;
     public static int destroyedBlockCount;
     /**
@@ -21,7 +14,7 @@ public class Block {
      *
      * @param level The current level in the game.
      */
-    public Block(int level){
+    public BlockWithoutUI(int level){
         blocks = new ArrayList<>();
         destroyedBlockCount = 0;
 
@@ -43,12 +36,12 @@ public class Block {
                     type = Block.BLOCK_STAR;
                     isExistStarBlock = true;
                 } else if (r==4 && !isExistBallBlock){
-                  type = Block.BLOCK_BALL;
-                  isExistBallBlock = true;
+                    type = Block.BLOCK_BALL;
+                    isExistBallBlock = true;
                 } else {
                     type = Block.BLOCK_NORMAL;
                 }
-                blocks.add(new BlockEntry(j, i, Colour.colors[new Random().nextInt(Colour.colors.length)], type));
+                blocks.add(new BlockEntry(j, i, type));
             }
         }
     }
@@ -72,11 +65,10 @@ public class Block {
     /**
      * Represents an individual block in the game.
      */
-    public class BlockEntry implements Serializable{
+    public class BlockEntry implements Serializable {
         public int row;
         public int column;
         public boolean isDestroyed = false;
-        public Color color;
         public int type;
         public int point;
         public int x;
@@ -87,13 +79,11 @@ public class Block {
          *
          * @param row    The row of the block.
          * @param column The column of the block.
-         * @param color  The color of the block.
          * @param type   The type of the block.
          */
-        public BlockEntry(int row, int column, Color color, int type) {
+        public BlockEntry(int row, int column, int type) {
             this.row = row;
             this.column = column;
-            this.color = color;
             this.type = type;
 
             draw();
@@ -104,37 +94,6 @@ public class Block {
         private void draw() {
             x = (column * width) + paddingHeight;
             y = (row * height) + paddingTop;
-
-            rect = new Rectangle();
-            rect.setWidth(width);
-            rect.setHeight(height);
-            rect.setX(x);
-            rect.setY(y);
-
-            if (type == BLOCK_CHOCO) {
-                Image image = new Image("choco.jpg");
-                ImagePattern pattern = new ImagePattern(image);
-                rect.setFill(pattern);
-                point = 3;
-            } else if (type == BLOCK_HEART) {
-                Image image = new Image("heart.jpg");
-                ImagePattern pattern = new ImagePattern(image);
-                rect.setFill(pattern);
-                point = 1;
-            } else if (type == BLOCK_STAR) {
-                Image image = new Image("star.jpg");
-                ImagePattern pattern = new ImagePattern(image);
-                rect.setFill(pattern);
-                point = 1;
-            } else if (type == BLOCK_BALL) {
-              Image image = new Image("ballBlock.jpg");
-              ImagePattern pattern = new ImagePattern(image);
-              rect.setFill(pattern);
-              point = 1;
-            } else { //type == BLOCK_NORMAL
-                rect.setFill(color);
-                point = 1;
-            }
         }
     }
 

@@ -1,7 +1,7 @@
 package brickGame;
 
-import brickGame.effects.BackgroundMusic;
-import brickGame.utils.Ranking;
+import brickGame.GameEffects.BackgroundMusic;
+import brickGame.GameUtils.Ranking;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
