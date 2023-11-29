@@ -1,6 +1,9 @@
 package brickGame;
 
-import brickGame.GameComponents.*;
+import brickGame.gameComponents.*;
+import brickGame.gameItems.Bonus;
+import brickGame.gameItems.Heart;
+
 /**
  * The GameVariables class manages the game variables and states, such as the ball,
  * break, blocks, bonus, heart, and various game-related parameters.

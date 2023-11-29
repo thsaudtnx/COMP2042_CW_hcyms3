@@ -1,4 +1,4 @@
-package brickGame.GameUtils;
+package brickGame.gameEffects;
 
 import brickGame.GameEngine;
 import javafx.application.Platform;

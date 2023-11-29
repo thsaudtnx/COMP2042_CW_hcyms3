@@ -1,4 +1,4 @@
-package brickGame.GameUtils;
+package brickGame.gameUtils;
 
 import java.io.*;
 import java.text.SimpleDateFormat;

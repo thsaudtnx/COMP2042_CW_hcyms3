@@ -1,5 +1,6 @@
-package brickGame.GameComponents;
+package brickGame.gameItems;
 
+import brickGame.gameComponents.Block;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;

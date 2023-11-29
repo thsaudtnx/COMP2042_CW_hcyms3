@@ -1,9 +1,11 @@
 package brickGame;
 
-import brickGame.GameComponents.*;
-import brickGame.GameUtils.LoadSave;
-import brickGame.GameUtils.Ranking;
-import brickGame.GameUtils.Show;
+import brickGame.gameComponents.*;
+import brickGame.gameItems.Bonus;
+import brickGame.gameItems.Heart;
+import brickGame.gameUtils.LoadSave;
+import brickGame.gameUtils.Ranking;
+import brickGame.gameEffects.Show;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

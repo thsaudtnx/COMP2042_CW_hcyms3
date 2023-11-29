@@ -1,6 +1,8 @@
-package brickGame.GameUtils;
+package brickGame.gameUtils;
 
-import brickGame.GameComponents.*;
+import brickGame.gameComponents.*;
+import brickGame.gameItems.Bonus;
+import brickGame.gameItems.Heart;
 
 import java.io.*;
 /**

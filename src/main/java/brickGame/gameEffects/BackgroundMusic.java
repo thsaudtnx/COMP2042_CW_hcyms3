@@ -1,4 +1,4 @@
-package brickGame.GameEffects;
+package brickGame.gameEffects;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;

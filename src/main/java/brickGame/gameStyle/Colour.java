@@ -1,4 +1,4 @@
-package brickGame.GameStyle;
+package brickGame.gameStyle;
 
 import javafx.scene.paint.Color;
 

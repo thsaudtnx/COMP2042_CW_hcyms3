@@ -1,4 +1,4 @@
-package brickGame.GameComponents;
+package brickGame.gameComponents;
 
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
