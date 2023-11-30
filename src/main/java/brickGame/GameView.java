@@ -307,7 +307,7 @@ public class GameView implements GamePage {
         timeLabel.setTextFill(Color.WHITE);
         scoreLabel.setStyle("-fx-font-size: 24px;");
         timeLabel.setStyle("-fx-font-size: 24px;");
-        titleImage = new Image("completeTitle.png");
+        titleImage = new Image("gameOver.png");
         ImageView titleImageView = new ImageView(titleImage);
         titleImageView.setFitWidth(titleImage.getWidth() * 0.5);
         titleImageView.setFitHeight(titleImage.getHeight() * 0.5);

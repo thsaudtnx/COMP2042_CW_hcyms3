@@ -32,8 +32,8 @@ game (Brick Breaker)
 * 23/10/2023 - 11/12/2023
 
 ## ⚙️ Environment
-- `Java 8`
-- `openjdk-21`
+- **Language** : `Java 21`
+- **JDK** : `openjdk-21`
 - **IDE** : Intellij
 - **Library** : JavaFx
 
@@ -166,8 +166,8 @@ Enumerate any new Java classes that you introduced for the assignment. Include a
 >   - Located in brickGame.gameComponents.Ball Class
 <br><br>
 > - Break
->  - Controls the break left or right 
->  - Located in brickGame.gameComponents.Break Class
+>   - Controls the break left or right 
+>   - Located in brickGame.gameComponents.Break Class
 <br><br>
 > - Colour
 >   - Stores the variable name for different colors
@@ -263,7 +263,8 @@ List the Java classes you modified from the provided code base. Describe the cha
 
 ### 6. Unexpected Problems
 Communicate any unexpected challenges or issues you encountered during the assignment. Describe how you addressed or attempted to resolve them.
-> - Changing Application UI : The UI of the game did not reflect the change correctly. This mostly occurred when promoting to the next level, ball hitting the block and so on.
+> - Changing Application UI : The UI of the game did not reflect the change correctly. 
+This mostly occurred when promoting to the next level, ball hitting the block and changing the stages in the short time.
 I thought the usage of the code "platform.runLater()" can handle this problem. I found out that
 implementing UI operations, such as creating or modifying UI elements, should be performed on the JavaFX Application Thread. 
 Tasks that take a significant amount of time should not be executed on the JavaFX Application Thread to prevent UI freezing.
@@ -273,3 +274,41 @@ That is, when a background thread needs to update the UI, use Platform.runLater(
 First, I moved the codes in physics method in Main class to update method. Then I deleted the physics method with physics thread in GameEngine class. It was mainly because multiple threads can lower the efficiency in this case. 
 Also, it was intuitive to control the thread correctly and by adding stop/go method for the thread was better.
 Therefore, the thread won't be terminated but will stop before the user wants to continue.
+
+## 📃 MARKING CRITERIA/RUBRIC
+### Assessment Criteria and Marking Overview Tasks
+> 1. Git
+>   - Project exists : https://github.com/thsaudtnx/COMP2042_CW_hcyms3
+>   - Commits : More than 40 commits
+>   - Regularity : Check by clicking "commits" in the repo
+>   - Commit messages : Check the messages by clicking "commits" in the repo
+>   - Branching/merging : Have used main branch 
+>   - Meaningful .gitignore : Added ranking.obj for preventing pushing the ranking file
+> 2. Refactoring
+>   - Meaningful package naming/organisation : Check the source code
+>   - Basic maintenance (e.g. renaming classes; encapsulation; deleting unused resources)
+>   - Supporting single responsibility by splitting up classes
+>   - MVC : Created GameView, GameController and Game Class for logic
+>   - Other patterns : Observer Pattern (setOnAction), Strategy Pattern (Game class) and Factory patterns(Ball, Block, Bonus, Heart and Ranking class) 
+>   - Meaningful JUnit tests :src/test/java/brickGame.gameComponent
+>   - Correct use of build tools (Maven or Gradle) : Automatically built in IntelliJ
+>   - Complete translation from Swing to JavaFX : No need
+>   - module-info.java file (compulsory) : Automatically built in IntelliJ
+> 3. Additions
+>   - Additional (playable) levels : Decreased level from 18 to 10, different block formation and speed of the ball on each level
+>   - Anything else exciting (reward) or bad (penalty) : Add items like heart(+1 life), bonus(+3 points) and new ball(reward - finish faster and penalty - hit bottom wall then -1 life)
+> 4. Documentation
+>   - Readme.md: highlighting the key changes (maintenance + extensions) + where + why : This Readme file
+>   - Javadocs: Created (and deposited in the correct location) : Created in Javadoc directory
+>   - Javadocs: New ones added (half marks if only comments added)
+>   - Javadocs: Complete (half marks for substantial amount) : Fully created
+>   - Javadocs: Informative and concise : Added sufficient javadoc comments with the code
+>   - Class diagram: Something meaningful present : Can understand the structure of the game easily with it
+>   - Class diagram: High level : Put only the classes or interfaces to be the high level of class diagram
+>   - Class diagram: Conforms with code (of the final program) : Everything conforms with code
+> 5. Demonstration video
+>   - Showing software running : Shown in the video
+>   - Explaining refactoring activities and extensions : Shown in the video
+>   - Highlighted two achievements most proud of : Ranking system and pause & continue function
+>   - Timing (approx. 3 minutes) : Below 3 minutes
+
