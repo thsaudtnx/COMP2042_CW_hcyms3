@@ -276,7 +276,7 @@ Also, it was intuitive to control the thread correctly and by adding stop/go met
 Therefore, the thread won't be terminated but will stop before the user wants to continue.
 
 ## 📃 MARKING CRITERIA/RUBRIC
-### Assessment Criteria and Marking Overview Tasks
+Assessment Criteria and Marking Overview Tasks
 > 1. Git
 >   - Project exists : https://github.com/thsaudtnx/COMP2042_CW_hcyms3
 >   - Commits : More than 40 commits
