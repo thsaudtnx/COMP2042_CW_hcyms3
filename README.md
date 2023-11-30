@@ -54,6 +54,8 @@ $ git push origin main
 2. Open the folder in the IntelliJ IDE
 3. In the IntelliJ > File > Project Structure > Libraries 
    add a library in Java > javafx-sdk-21.0.1 > lib
+4. Before running the game, change the below variable in the Ranking and LoadSave Class to avoid the error!
+``` private String savePath = "C:/Users/messi/Desktop/brickGameData"; ```
 5. Run the Main Class
 
 ## 📌 Implementations
