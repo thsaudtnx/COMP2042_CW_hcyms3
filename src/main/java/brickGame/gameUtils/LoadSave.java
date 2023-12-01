@@ -9,7 +9,7 @@ import java.io.*;
  * The LoadSave class manages the saving and loading of game data to and from a file.
  */
 public class LoadSave {
-    final public static String savePath = "C:/Users/messi/Desktop/brickGameData";
+    final public static String savePath = "brickGameData";
     final public static String fileName = "savedData.obj";
     static Data data;
     /**

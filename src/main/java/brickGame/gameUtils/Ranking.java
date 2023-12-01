@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  */
 public class Ranking {
     private List<RankingEntry> entries;
-    private String savePath = "C:/Users/messi/Desktop/brickGameData";
+    private String savePath = "brickGameData";
     private String fileName = "ranking.obj";
     /**
      * Constructs a Ranking object and loads existing entries from a file.
