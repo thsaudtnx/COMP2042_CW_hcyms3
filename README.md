@@ -283,7 +283,7 @@ Assessment Criteria and Marking Overview Tasks
 >   - Regularity : Check by clicking "commits" in the repo
 >   - Commit messages : Check the messages by clicking "commits" in the repo
 >   - Branching/merging : Have used main branch 
->   - Meaningful .gitignore : Added ranking.obj for preventing pushing the ranking file
+>   - Meaningful .gitignore : Added ranking.obj and brickGameData for preventing pushing the save/load and ranking file
 > 2. Refactoring
 >   - Meaningful package naming/organisation : Check the source code
 >   - Basic maintenance (e.g. renaming classes; encapsulation; deleting unused resources)
