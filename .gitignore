@@ -5,6 +5,7 @@ target/
 
 ### File System ###
 ranking.obj
+brickGameData
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
